@@ -1,4 +1,4 @@
-# Resume2Apply 📄🚀
+# Resume2Apply
 
 <div align="center">
   <h3>An Open-Source Next.js Career Application Manager</h3>
@@ -16,7 +16,7 @@ Instead of losing track of multiple CV versions scattered across folders, Resume
 - **Email/Cover Letter Templating**: Inject dynamic fields automatically based on Kanban targets.
 - **Analytics Dashboard**: Live insights into your application funnels.
 
-## Technology Stack 🛠️
+## Technology Stack
 
 - **Framework**: `Next.js 14` (App Router)
 - **Database**: `MongoDB` / `Mongoose`
@@ -27,7 +27,7 @@ Instead of losing track of multiple CV versions scattered across folders, Resume
 
 ---
 
-## 💻 Getting Started (Self-Hosting)
+## Getting Started (Self-Hosting)
 
 ### Prerequisites
 Before you start, you'll need:
