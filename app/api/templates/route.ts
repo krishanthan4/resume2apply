@@ -27,7 +27,8 @@ export async function POST(request: Request) {
     } else {
       result = await ExecutiveSummaryTemplate.create({
         title,
-        content: detailedSummery || shortSummery || "",
+        shortSummery: shortSummery || "",
+        detailedSummery: detailedSummery || shortSummery || "",
       });
     }
 

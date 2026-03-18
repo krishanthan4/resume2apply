@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
+import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 
 interface AddJobModalProps {
   onClose: () => void;
@@ -39,6 +40,34 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev: any) => ({
+        ...prev,
+        companyName: initialData.companyName || prev.companyName,
+        appliedJobPosition: initialData.appliedJobPosition || prev.appliedJobPosition,
+        resumeData: initialData.resumeData || prev.resumeData,
+      }));
+    }
+
+    // 2. Consume from global store if available
+    const pendingConfig = useJobBoardStore.getState().pendingResumeConfig;
+    
+    if (pendingConfig) {
+      setFormData((prev: any) => ({
+        ...prev,
+        companyName: pendingConfig.targetCompany || prev.companyName,
+        appliedJobPosition: pendingConfig.targetPosition || prev.appliedJobPosition,
+        resumeData: { templateName: pendingConfig.type, customData: pendingConfig },
+      }));
+      
+      const strictModeTimer = setTimeout(() => {
+        useJobBoardStore.getState().clearPendingResumeConfig();
+      }, 500);
+      return () => clearTimeout(strictModeTimer);
+    }
+  }, [initialData]);
+
   const set = (field: string, value: string) =>
     setFormData((prev: any) => ({ ...prev, [field]: value }));
 
@@ -52,7 +81,11 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
         body: JSON.stringify({ ...formData, status: "willing_to_apply" }),
       });
       const json = await res.json();
-      if (json.success) { onJobCreated(json.data); onClose(); }
+      if (json.success) { 
+        useJobBoardStore.getState().clearPendingResumeConfig();
+        onJobCreated(json.data); 
+        onClose(); 
+      }
     } catch (err) {
       console.error(err);
     } finally {

@@ -27,7 +27,7 @@ function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => vo
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <Field label="Category Name (optional)"><Input placeholder="e.g. Frontend Development" value={item.category || ""} onChange={(e) => update(i, "category", e.target.value)} /></Field>
             <Field label="Skills (comma separated)">
-              <Textarea placeholder="React, Next.js, TypeScript..." style={{ minHeight: 64 }} value={(item.skills || []).join(", ")} onChange={(e) => update(i, "skills", e.target.value.split(",").map((s:string) => s.trim()).filter(Boolean))} />
+              <Textarea placeholder="React, Next.js, TypeScript..." style={{ minHeight: 64 }} value={(item.skills || []).join(",")} onChange={(e) => update(i, "skills", e.target.value.split(","))} />
             </Field>
           </div>
         </div>

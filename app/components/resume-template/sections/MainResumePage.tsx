@@ -36,9 +36,9 @@ const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type:
   const projectBulletsEnabled = true;
   const projectsLimit = maxProjects;
   
-  let summaryText = config?.generalExecutiveSummary?.detailedSummery;
-  if (isSingle && config?.generalExecutiveSummary?.shortSummery) {
-    summaryText = config.generalExecutiveSummary.shortSummery;
+  let summaryText = config?.generalExecutiveSummary?.detailedSummery || config?.generalExecutiveSummary?.content;
+  if (isSingle && (config?.generalExecutiveSummary?.shortSummery || config?.generalExecutiveSummary?.content)) {
+    summaryText = config.generalExecutiveSummary.shortSummery || config.generalExecutiveSummary.content;
   }
   
   // Allow overriding with template text if selected in custom builder
@@ -64,12 +64,12 @@ const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type:
   const renderSection = (sectionName: string) => {
     switch (sectionName) {
       case "executiveSummary":
-        if (config?.showExecutiveSummary !== false && config?.sections?.executiveSummaryEnabled && summaryText) {
+        if (config?.showExecutiveSummary !== false && config?.sections?.executiveSummaryEnabled !== false && summaryText) {
           return <SummerySection key="summary" styles={styles} summaryText={summaryText} />;
         }
         return null;
       case "experience":
-        if (config?.sections?.experienceEnabled && config?.experiences?.length > 0) {
+        if (config?.sections?.experienceEnabled !== false && config?.experiences?.length > 0) {
           return (
             <ExperienceSection 
               key="exp"
@@ -82,21 +82,21 @@ const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type:
         }
         return null;
       case "projects":
-        if (config?.sections?.projectsEnabled && config?.projects?.length > 0) {
+        if (config?.sections?.projectsEnabled !== false && config?.projects?.length > 0) {
           return (
              <ProjectSection key="proj" styles={styles} config={config} projectsLimit={projectsLimit} projectBulletsEnabled={projectBulletsEnabled} projectBulletsLimit={maxProjectBullets} />
           );
         }
         return null;
       case "skills":
-        if (config?.sections?.skillsEnabled && config?.skillsData?.length > 0) {
+        if (config?.sections?.skillsEnabled !== false && config?.skillsData?.length > 0) {
           return (
              <SkillSection key="skills" styles={styles} config={config} skillCategoriesEnabled={skillCategoriesEnabled} skillsLimit={skillsLimit} isSingle={isSingle} />
           );
         }
         return null;
       case "education":
-        if (config?.sections?.educationEnabled && config?.educations?.length > 0) {
+        if (config?.sections?.educationEnabled !== false && config?.educations?.length > 0) {
           return (
              <EducationSection key="edu" styles={styles} config={config} showGraduationDate={config?.showGraduationDate ?? config?.educationConfig?.showGraduationDate ?? true} />
           );

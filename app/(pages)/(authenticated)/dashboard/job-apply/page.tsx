@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Plus, Loader2, FileText, Search } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import JobDetailModal from "@/app/components/job-apply/JobDetailModal";
 import CoverLetterTemplatesModal from "@/app/components/job-apply/CoverLetterTemplatesModal";
 import KanbanColumn from "@/app/components/job-apply/KanbanColumn";
@@ -24,27 +26,20 @@ export default function JobApplyKanban() {
   const [dateFilter, setDateFilter] = useState("all");
   const [initialJobData, setInitialJobData] = useState<any>(null);
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.get("newApplication") === "true") {
+    if (searchParams && searchParams.get("newApplication") === "true") {
+      // Delay opening modal slightly to ensure soft-transitions flow correctly
+      setTimeout(() => {
         setIsModalOpen(true);
-        const storedConfig = localStorage.getItem("pendingResumeConfig");
-        if (storedConfig) {
-          try {
-            const configObj = JSON.parse(storedConfig);
-            setInitialJobData({
-              companyName: configObj.targetCompany || "",
-              appliedJobPosition: configObj.targetPosition || "",
-              resumeData: { templateName: configObj.type, customData: configObj },
-            });
-            localStorage.removeItem("pendingResumeConfig");
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch (e) {}
-        }
-      }
+      }, 50);
+
+      // Clean the URL without tracking a new history state.
+      router.replace("/dashboard/job-apply", { scroll: false });
     }
-  }, []);
+  }, [searchParams, router]);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -53,8 +48,11 @@ export default function JobApplyKanban() {
         const json = await res.json();
         if (json.success) {
           setJobs(json.data);
-          const searchParams = new URLSearchParams(window.location.search);
-          const jobIdToOpen = searchParams.get("openJob");
+          let jobIdToOpen = null;
+          if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            jobIdToOpen = params.get("openJob");
+          }
           if (jobIdToOpen) {
             const jobToOpen = json.data.find((j: any) => j._id === jobIdToOpen);
             if (jobToOpen) setSelectedJob(jobToOpen);

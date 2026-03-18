@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, Save, Mail, CalendarClock, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 const S = {
   overlay: {
@@ -145,13 +146,13 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
       });
       const json = await res.json();
       if (json.success) {
-        alert(scheduleOption === "immediate" ? "Email sent!" : `Scheduled for ${new Date(json.scheduledTime).toLocaleString()}`);
+        toast.success(scheduleOption === "immediate" ? "Email sent!" : `Scheduled for ${new Date(json.scheduledTime).toLocaleString()}`);
         onUpdate(json.data);
         onClose();
       } else {
-        alert("Error: " + json.error);
+        toast.error("Error: " + json.error);
       }
-    } catch (e) { alert("Something went wrong"); }
+    } catch (e) { toast.error("Something went wrong"); }
     finally { setIsSending(false); }
   };
 
@@ -161,9 +162,9 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
     try {
       const res = await fetch(`/api/jobs/${job._id}/cancel-email`, { method: "POST" });
       const json = await res.json();
-      if (json.success) { alert("Email cancelled."); onUpdate(json.data); }
-      else alert("Error: " + json.error);
-    } catch { alert("Something went wrong"); }
+      if (json.success) { toast.success("Email cancelled."); onUpdate(json.data); }
+      else toast.error("Error: " + json.error);
+    } catch { toast.error("Something went wrong"); }
     finally { setIsCancelling(false); }
   };
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import ControlSide from "@/app/components/resume-design/ControlsSide";
 import PDFView from "@/app/components/resume-design/PDFView";
 
@@ -70,6 +71,12 @@ export default function CustomResumeBuilderPage() {
               showGraduationDate: data.resumeData.education.enableDate,
             }));
           }
+          if (data.resumeData?.generalExecutiveSummary?._id) {
+            setConfig((prev) => ({
+              ...prev,
+              execTemplateId: prev.execTemplateId || data.resumeData.generalExecutiveSummary._id,
+            }));
+          }
         }
       } catch (error) {
         console.error("Failed to load builder data:", error);
@@ -98,7 +105,7 @@ export default function CustomResumeBuilderPage() {
       if (config.execTemplateId) {
         const t = execTemplates.find(x => x._id === config.execTemplateId);
         if (t) {
-          currentExecTemplateText = config.type.includes("single") ? t.shortSummery : t.detailedSummery;
+          currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
         }
       }
 
@@ -116,6 +123,14 @@ export default function CustomResumeBuilderPage() {
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
+
+      const payload = {
+        ...resumeData,
+        ...config,
+        selectedExecutiveSummaryText: currentExecTemplateText || config.selectedExecutiveSummaryText
+      };
+      // User requested explicitly that Generate CV should log the payload to Zustand state.
+      useJobBoardStore.getState().setPendingResumeConfig(payload);
     } catch (error) {
       console.error(error);
     } finally {
@@ -139,10 +154,10 @@ export default function CustomResumeBuilderPage() {
     if (config.execTemplateId) {
       const t = execTemplates.find(x => x._id === config.execTemplateId);
       if (t) {
-        currentExecTemplateText = config.type.includes("single") ? t.shortSummery : t.detailedSummery;
+        currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
       }
     }
-    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.executiveSummary || "");
+    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.generalExecutiveSummary?.detailedSummery || resumeData?.generalExecutiveSummary?.content || "");
     setShowExecSummaryModal(true);
   };
 
@@ -152,8 +167,9 @@ export default function CustomResumeBuilderPage() {
       ...config,
       selectedExecutiveSummaryText: tempExecSummary
     };
+    
 
-    localStorage.setItem("pendingResumeConfig", JSON.stringify(payload));
+    useJobBoardStore.getState().setPendingResumeConfig(payload);
     router.push("/dashboard/job-apply?newApplication=true");
   };
 

@@ -33,24 +33,24 @@ const STEPS = [
   },
   {
     num: 3,
-    label: "Targets",
-    sublabel: "Companies",
-    path: "/dashboard/targets",
-    icon: <Target size={15} />,
-  },
-  {
-    num: 4,
     label: "Apply",
     sublabel: "Job board",
     path: "/dashboard/job-apply",
     icon: <Briefcase size={15} />,
   },
   {
-    num: 5,
+    num: 4,
     label: "Analytics",
     sublabel: "Track progress",
     path: "/dashboard/analytics",
     icon: <PieChart size={15} />,
+  },
+   {
+    num: 5,
+    label: "Targets",
+    sublabel: "Companies",
+    path: "/dashboard/targets",
+    icon: <Target size={15} />,
   },
 ];
 

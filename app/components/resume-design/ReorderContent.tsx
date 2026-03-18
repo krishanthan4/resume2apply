@@ -26,7 +26,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
 
   const handleSkillChange = (index: number, value: string) => {
     const newList = [...resumeData.skillsData];
-    newList[index].skills = value.split(",").map((s: string) => s.trim()).filter(Boolean);
+    newList[index].skills = value.split(",");
     updateList("skillsData", newList);
   };
 
@@ -186,7 +186,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
                 type="text" 
                 className="input-field"
                 style={{ flex: 1, padding: "6px 10px", fontSize: 13 }}
-                value={(skillGroup.skills || []).join(", ")}
+                value={(skillGroup.skills || []).join(",")}
                 onChange={(e) => handleSkillChange(index, e.target.value)}
                 placeholder="Comma separated skills..."
                 disabled={config?.type?.includes("single")}
