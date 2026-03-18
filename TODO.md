@@ -54,7 +54,7 @@
     - > stage 2 - preview & other details
         - select executive summeries
         - create executive summery templates
-    - > stage 3 - features in custom-resume-builder
+    - > stage 3 - features in custom-resume-design
         - which allows to make all the small twiks to the tempalate, edit content, arrange content etc.
             when the user clicks on apply
                 - before sending to job-apply

@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/app/utils/mongodb";
-import Resume from "@/app/models/Resume";
+import BaseResume from "@/app/models/ResumeContent";
 import ExecutiveSummaryTemplate from "@/app/models/ExecutiveSummaryTemplate";
 import mongoose from "mongoose";
 
 export async function GET() {
   try {
     await dbConnect();
-    // Assuming single-user mode for now, fetch the first resume
-    let resume = await Resume.findOne().lean();
+    // Assuming single-user mode for now, fetch the first base resume
+    let resume = await BaseResume.findOne().lean();
     if (!resume) {
       resume = {};
     }
@@ -35,14 +35,14 @@ export async function POST(request: Request) {
     await dbConnect();
     const body = await request.json();
     const { _id, ...updateData } = body;
-    
+
     let result;
     if (!_id) {
       // Create new dummy userId if not authenticated
       const dummyUserId = new mongoose.Types.ObjectId();
-      result = await Resume.create({ ...updateData, userId: dummyUserId });
+      result = await BaseResume.create({ ...updateData, userId: dummyUserId });
     } else {
-      result = await Resume.findByIdAndUpdate(
+      result = await BaseResume.findByIdAndUpdate(
         _id,
         { $set: updateData },
         { new: true, upsert: true }

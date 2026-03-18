@@ -1,20 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Loader2,
-  Download,
-  Settings,
-  FileText,
-  X,
-} from "lucide-react";
-import ReorderContent from "@/app/components/resume-builder/ReorderContent";
-import ResumeBuilderTabs from "@/app/components/resume-builder/ResumeBuilderTabs";
-import PreviewArea from "@/app/components/resume-builder/PreviewArea";
-import Nav from "@/app/components/resume-builder/Nav";
-import StylesTabContent from "@/app/components/resume-builder/StylesTabContent";
-import TemplatesTabContent from "@/app/components/resume-builder/TemplatesTabContent";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ControlSide from "@/app/components/resume-design/ControlsSide";
+import PDFView from "@/app/components/resume-design/PDFView";
 
 export default function CustomResumeBuilderPage() {
   const router = useRouter();
@@ -23,7 +13,8 @@ export default function CustomResumeBuilderPage() {
   const [resumeData, setResumeData] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [execTemplates, setExecTemplates] = useState<any[]>([]);
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [showExecSummaryModal, setShowExecSummaryModal] = useState(false);
+  const [tempExecSummary, setTempExecSummary] = useState("");
 
   const [config, setConfig] = useState({
     fontSizeBase: 11.5,
@@ -143,15 +134,23 @@ export default function CustomResumeBuilderPage() {
     }
   };
 
-  const handleApplyToJob = () => {
-    const currentExecTemplateText = config.execTemplateId 
-      ? execTemplates.find(t => t._id === config.execTemplateId)?.content 
-      : "";
-      
+  const handleApplyToJobClick = () => {
+    let currentExecTemplateText = "";
+    if (config.execTemplateId) {
+      const t = execTemplates.find(x => x._id === config.execTemplateId);
+      if (t) {
+        currentExecTemplateText = config.type.includes("single") ? t.shortSummery : t.detailedSummery;
+      }
+    }
+    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.executiveSummary || "");
+    setShowExecSummaryModal(true);
+  };
+
+  const confirmApplyToJob = () => {
     const payload = {
       ...resumeData,
       ...config,
-      selectedExecutiveSummaryText: currentExecTemplateText || config.selectedExecutiveSummaryText
+      selectedExecutiveSummaryText: tempExecSummary
     };
 
     localStorage.setItem("pendingResumeConfig", JSON.stringify(payload));
@@ -161,137 +160,57 @@ export default function CustomResumeBuilderPage() {
   return (
     <div style={{ display: "flex", gap: 24, height: "calc(100vh - 120px)", marginTop: -12 }}>
       {/* Left sidebar: Controls */}
-      <aside
-        style={{
-          width: config.sidebarWidth,
-          flexShrink: 0,
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ padding: "20px 24px", borderBottom: "1px solid #e4e4e7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <h1 style={{ fontSize: 18, fontWeight: 800, color: "#18181b", letterSpacing: "-0.025em" }}>Step 2 — CV Design</h1>
-            <p style={{ fontSize: 13, color: "#71717a", marginTop: 2 }}>Tweak and generate your PDF.</p>
-          </div>
-        </div>
-
-        <div style={{ padding: "0 16px" }}>
-          <ResumeBuilderTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
-
-        <div style={{ flex: 1, overflowY: "auto", padding: 24, background: "#fafafa" }} className="scrollbar-hide">
-          {activeTab === "styles" ? (
-            <StylesTabContent config={config} setConfig={setConfig} />
-          ) : activeTab === "content" ? (
-            <ReorderContent
-              resumeData={resumeData}
-              setResumeData={setResumeData}
-              config={config}
-              setConfig={setConfig}
-            />
-          ) : (
-            <TemplatesTabContent 
-              config={config} 
-              setConfig={setConfig}
-              execTemplates={execTemplates}
-              refreshTemplates={refreshTemplates}
-            />
-          )}
-        </div>
-
-        <div style={{ padding: "16px 20px", background: "#fff", borderTop: "1px solid #e4e4e7", display: "flex", gap: 8 }}>
-          <button
-            disabled={!resumeData || isGenerating}
-            onClick={generatePreview}
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              background: "#f4f4f5",
-              color: "#18181b",
-              border: "1px solid #e4e4e7",
-              borderRadius: 8,
-              padding: "10px 0",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: (!resumeData || isGenerating) ? "not-allowed" : "pointer",
-            }}
-          >
-            {isGenerating && <Loader2 size={14} className="animate-spin" />}
-            Generate
-          </button>
-          
-          <button
-            onClick={handleDownload}
-            disabled={!pdfUrl || isGenerating}
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              background: "#f4f4f5",
-              color: "#18181b",
-              border: "1px solid #e4e4e7",
-              borderRadius: 8,
-              padding: "10px 0",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: (!pdfUrl || isGenerating) ? "not-allowed" : "pointer",
-            }}
-          >
-            <Download size={14} /> PDF
-          </button>
-
-          <button
-            onClick={handleApplyToJob}
-            style={{
-              flex: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              background: "#18181b",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              padding: "10px 0",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            <FileText size={14} /> Use for Job
-          </button>
-        </div>
-      </aside>
+    <ControlSide
+    config={config}
+    setConfig={setConfig}
+    resumeData={resumeData}
+    setResumeData={setResumeData}
+    execTemplates={execTemplates}
+    refreshTemplates={refreshTemplates}
+    activeTab={activeTab}
+    setActiveTab={setActiveTab}
+    generatePreview={generatePreview}
+    handleDownload={handleDownload}
+    pdfUrl={pdfUrl}
+    isGenerating={isGenerating}
+    handleApplyToJobClick={handleApplyToJobClick}
+    />
 
       {/* Right side: PDF Preview */}
-      <div
-        style={{
-          flex: 1,
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
-        <Nav config={config} handleDownload={handleDownload} pdfUrl={pdfUrl} setConfig={setConfig} />
-        <div style={{ flex: 1, overflowY: "auto", background: "#f4f4f5", display: "flex", flexDirection: "column" }}>
-          <PreviewArea pdfUrl={pdfUrl} />
+      <PDFView
+        config={config}
+        handleDownload={handleDownload}
+        pdfUrl={pdfUrl}
+        setConfig={setConfig}
+      />
+
+      {showExecSummaryModal && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(24, 24, 27, 0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}>
+          <div style={{ background: "#fff", borderRadius: 12, padding: 24, width: "100%", maxWidth: 500, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#18181b" }}>Verify Executive Summary</h3>
+              <button onClick={() => setShowExecSummaryModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#a1a1aa" }}><X size={18} /></button>
+            </div>
+            <p style={{ fontSize: 13, color: "#71717a" }}>
+              Before we send this application to the Kanban board, do you need to make any final adjustments to your executive summary?
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Executive Summary content</label>
+              <textarea
+                value={tempExecSummary}
+                onChange={(e) => setTempExecSummary(e.target.value)}
+                className="textarea-field"
+                style={{ minHeight: 140 }}
+                placeholder="Adjust summary..."
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 12 }}>
+              <button className="btn-secondary" onClick={() => setShowExecSummaryModal(false)}>Cancel</button>
+              <button className="btn-primary" onClick={confirmApplyToJob}>Confirm & Apply</button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // app/utils/emailSending/decorator.ts
 export interface IEmailService {
-  sendEmail(to: string, subject: string, body: string): Promise<boolean>;
+  sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any>;
 }
 
 export class EmailDecorator implements IEmailService {
@@ -10,7 +10,7 @@ export class EmailDecorator implements IEmailService {
     this.wrappedService = service;
   }
 
-  public async sendEmail(to: string, subject: string, body: string): Promise<boolean> {
-    return this.wrappedService.sendEmail(to, subject, body);
+  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
+    return this.wrappedService.sendEmail(to, subject, body, attachments, scheduledAt);
   }
 }

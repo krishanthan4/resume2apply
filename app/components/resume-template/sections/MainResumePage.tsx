@@ -1,11 +1,11 @@
 import { Page, Document} from '@react-pdf/renderer';
-import getVisitorStyles from '@/app/components/visitor-resume/styles/visitorResumeStyles';
-import getEditorStyles from "@/app/components/visitor-resume/styles/editorResumeStyles";
-import HeaderSection from '@/app/components/visitor-resume/sections/HeaderSection';
-import SummerySection from '@/app/components/visitor-resume/sections/SummerySection';
-import ProjectSection from '@/app/components/visitor-resume/sections/ProjectSection';
-import SkillSection from '@/app/components/visitor-resume/sections/SkillSection';
-import EducationSection from '@/app/components/visitor-resume/sections/EducationSection';
+import getVisitorStyles from '../styles/visitorResumeStyles';
+import getEditorStyles from "../styles/editorResumeStyles";
+import HeaderSection from './HeaderSection';
+import SummerySection from './SummerySection';
+import ProjectSection from './ProjectSection';
+import SkillSection from './SkillSection';
+import EducationSection from './EducationSection';
 import ExperienceSection from './ExperienceSection';
 
 const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type: string, isEditor?: boolean }) => {

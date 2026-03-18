@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
-import ResumeDocument from "@/app/components/visitor-resume/sections/MainResumePage";
+import ResumeDocument from "@/app/components/resume-template/sections/MainResumePage";
 
 export async function POST(request: Request) {
   try {

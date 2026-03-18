@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import dbConnect from "@/app/utils/mongodb";
 import Job from "@/app/models/Job";
 import CoverLetterTemplate from "@/app/models/CoverLetterTemplate";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { getEmailService } from "@/app/utils/emailSending/EmailService";
 
 function getNextWorkDayMorning8_58(currentDate: Date): Date {
   const date = new Date(currentDate);
   const day = date.getDay(); // 0 is Sunday, 6 is Saturday
-  
+
   if (day === 5) { // Friday
     date.setDate(date.getDate() + 3);
   } else if (day === 6) { // Saturday
@@ -17,7 +15,7 @@ function getNextWorkDayMorning8_58(currentDate: Date): Date {
   } else {
     date.setDate(date.getDate() + 1);
   }
-  
+
   date.setHours(8, 58, 0, 0);
   return date;
 }
@@ -88,11 +86,11 @@ export async function POST(
           .replace(/\{\{company(?:Name)?\}\}/gi, job.companyName)
           .replace(/\{\{(?:job)?(?:T|t)itle\}\}/gi, job.appliedJobPosition)
           .replace(/\{\{position\}\}/gi, job.appliedJobPosition);
-        
+
         let textBody = template.body
-            .replace(/\{\{company(?:Name)?\}\}/gi, job.companyName)
-            .replace(/\{\{(?:job)?(?:T|t)itle\}\}/gi, job.appliedJobPosition)
-            .replace(/\{\{position\}\}/gi, job.appliedJobPosition);
+          .replace(/\{\{company(?:Name)?\}\}/gi, job.companyName)
+          .replace(/\{\{(?:job)?(?:T|t)itle\}\}/gi, job.appliedJobPosition)
+          .replace(/\{\{position\}\}/gi, job.appliedJobPosition);
 
         // Convert simple line breaks to HTML
         coverLetterHtml = textBody.replace(/\n/g, '<br/>');
@@ -112,13 +110,13 @@ export async function POST(
     try {
       const proto = request.headers.get("x-forwarded-proto") || "http";
       const host = request.headers.get("host");
-      
+
       let resumePdfRes;
 
       if (job.resumeData && job.resumeData.customData) {
-        // We have a fully customized payload built from /custom-resume-builder
+        // We have a fully customized payload built from /custom-resume-design
         const resumeUrl = `${proto}://${host}/api/resume/preview`;
-        
+
         let payload = { ...job.resumeData.customData };
         // If there's an explicit override in the kanban board (execSummaryId)
         if (job.execSummaryId) {
@@ -127,11 +125,11 @@ export async function POST(
             const ExecutiveSummaryTemplate = require("@/app/models/ExecutiveSummaryTemplate").default;
             const execData = await ExecutiveSummaryTemplate.findById(job.execSummaryId).lean();
             if (execData && execData.content) {
-               payload.selectedExecutiveSummaryText = execData.content;
+              payload.selectedExecutiveSummaryText = execData.content;
             }
-          } catch(e) {}
+          } catch (e) { }
         }
-        
+
         resumePdfRes = await fetch(resumeUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -175,29 +173,36 @@ export async function POST(
       }
     }
 
-    const emailResponse = await resend.emails.send(resendOptions);
+    const emailService = getEmailService();
+    const emailResponse = await emailService.sendEmail(
+      job.companyEmail,
+      coverLetterSubject,
+      coverLetterHtml,
+      resendOptions.attachments,
+      resendOptions.scheduled_at
+    );
 
-    if (emailResponse.error) {
-       return NextResponse.json({ success: false, error: emailResponse.error.message }, { status: 400 });
+    if (!emailResponse.success || emailResponse.error) {
+      return NextResponse.json({ success: false, error: emailResponse.error?.message || "Failed to send email" }, { status: 400 });
     }
 
     // Save Resend Email ID if it was scheduled
     if (!sendImmediately && emailResponse.data?.id) {
-       job.resendEmailId = emailResponse.data.id;
+      job.resendEmailId = emailResponse.data.id;
     }
 
     // Update job status
     job.scheduledEmailDate = scheduledTime || new Date();
     // Move slightly into tracking. Maybe stay applied if done.
-    if(job.status === "willing_to_apply") {
-         job.status = "applied"; 
+    if (job.status === "willing_to_apply") {
+      job.status = "applied";
     }
     await job.save();
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       scheduledTime: job.scheduledEmailDate,
-      data: job 
+      data: job
     });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

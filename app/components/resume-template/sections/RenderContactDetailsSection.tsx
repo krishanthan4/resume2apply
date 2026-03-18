@@ -7,7 +7,7 @@ import {
   LinkedInIcon,
   LocationIcon,
   PhoneIcon,
-} from "@/app/components/visitor-resume/contactIcons";
+} from "../contactIcons";
 import { stripUrl } from "@/app/utils/helpers";
 
 // Render Header details with separators
@@ -19,7 +19,7 @@ const renderContactDetails = ({
   styles: any;
 }) => {
   const items = [];
-  if (common?.showPhoneNumber !== false && common?.phone?.enable && common?.phone?.number) {
+  if (common?.showPhoneNumber !== false && common?.phone?.number) {
     items.push(
       <View style={styles.personalDetailItem} key="phone">
         {common?.enableIcons && (

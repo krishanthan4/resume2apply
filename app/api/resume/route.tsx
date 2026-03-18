@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
 import dbConnect from "@/app/utils/mongodb";
-import Resume from "@/app/models/Resume";
+import ResumeContent from "@/app/models/ResumeContent";
 import ExecutiveSummaryTemplate from "@/app/models/ExecutiveSummaryTemplate";
-import ResumeDocument from "@/app/components/visitor-resume/sections/MainResumePage";
+import ResumeDocument from "@/app/components/resume-template/sections/MainResumePage";
 
 export async function GET(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const execSummaryId = searchParams.get("execSummaryId");
 
     // Fetch the first resume configuration (or by user if auth implemented)
-    const resumeData = await Resume.findOne().lean() || {};
+    const resumeData = await ResumeContent.findOne().lean() || {};
     
     // Fetch executive summary
     let generalSummaryData = null;

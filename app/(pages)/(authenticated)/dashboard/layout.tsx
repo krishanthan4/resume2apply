@@ -21,7 +21,7 @@ const STEPS = [
     num: 1,
     label: "Profile",
     sublabel: "Your data",
-    path: "/dashboard/resume-builder",
+    path: "/dashboard/profile-data",
     icon: <UserCircle size={15} />,
   },
   {
@@ -100,7 +100,7 @@ export default function DashboardLayout({
           }}
         >
           <Link
-            href="/dashboard/resume-builder"
+            href="/dashboard/resume-design"
             style={{
               display: "flex",
               alignItems: "center",

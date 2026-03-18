@@ -10,18 +10,22 @@ export class ResendEmailService implements IEmailService {
     this.fromEmail = fromEmail;
   }
 
-  public async sendEmail(to: string, subject: string, body: string): Promise<boolean> {
+  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
     try {
-      await resend.emails.send({
+      const payload: any = {
         from: this.fromEmail,
         to: to,
         subject: subject,
         html: body,
-      });
-      return true;
-    } catch (error) {
+      };
+      if (attachments) payload.attachments = attachments;
+      if (scheduledAt) payload.scheduled_at = scheduledAt;
+
+      const res = await resend.emails.send(payload);
+      return { success: true, data: res.data, error: res.error };
+    } catch (error: any) {
       console.error('Failed to send email via Resend:', error);
-      return false;
+      return { success: false, error: error.message };
     }
   }
 }
