@@ -40,11 +40,11 @@ export async function POST(request: Request) {
       { success: true, message: "User created successfully" },
       { status: 201 }
     );
-    
+
     // Cookie expires in 7 days
     response.cookies.set({
       name: "builder_auth",
-      value: "true",
+      value: newUser._id.toString(),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7,

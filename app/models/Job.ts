@@ -9,6 +9,7 @@ const ContactSchema = new mongoose.Schema({
 
 const JobSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     companyName: { type: String, required: true },
     companyEmail: { type: String },
     appliedJobPosition: { type: String, required: true },

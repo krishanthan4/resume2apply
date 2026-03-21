@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     // In production, ALWAYS save the hashed password. This accommodates the first-time setup or hashed versions.
     const isMatch = await bcrypt.compare(password, savedHash).catch(() => false);
-    
+
     // Fallback just in case user saved plaintext manually in Sanity studio for testing
     const isPlainTextMatch = password === savedHash;
 
@@ -44,11 +44,11 @@ export async function POST(request: Request) {
 
     // Set auth cookie
     const response = NextResponse.json({ success: true }, { status: 200 });
-    
+
     // Cookie expires in 7 days
     response.cookies.set({
       name: "builder_auth",
-      value: "true",
+      value: user._id.toString(),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7,

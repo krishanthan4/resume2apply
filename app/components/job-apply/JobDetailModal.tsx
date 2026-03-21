@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import JobMainInfo from "./JobMainInfo";
 import JobSidebar from "./JobSidebar";
 import { Button, ConfirmationModal } from "../ui";
+import { useRouter } from "next/navigation";
 
 interface JobDetailModalProps {
   job: any;
@@ -14,6 +15,7 @@ interface JobDetailModalProps {
 }
 
 export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModalProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState({ ...job });
   const [isSaving, setIsSaving] = useState(false);
   const [templates, setTemplates] = useState<any[]>([]);
@@ -24,16 +26,22 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
   const [isCancelling, setIsCancelling] = useState(false);
   const [isFetchingContacts, setIsFetchingContacts] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [userConnection, setUserConnection] = useState<any>(null);
 
   useEffect(() => { setFormData({ ...job }); }, [job]);
 
   useEffect(() => {
     const f = async () => {
       try {
-        const [r1, r2] = await Promise.all([fetch("/api/cover-letters"), fetch("/api/templates/exec-summary")]);
-        const [j1, j2] = await Promise.all([r1.json(), r2.json()]);
+        const [r1, r2, r3] = await Promise.all([
+          fetch("/api/cover-letters"),
+          fetch("/api/templates/exec-summary"),
+          fetch("/api/user/me")
+        ]);
+        const [j1, j2, j3] = await Promise.all([r1.json(), r2.json(), r3.json()]);
         if (j1.success) setTemplates(j1.data);
         if (j2.success) setExecTemplates(j2.data);
+        if (j3.success) setUserConnection(j3.user.emailConnection);
       } catch (e) { console.error(e); }
     };
     f();
@@ -72,6 +80,12 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
   };
 
   const handleSendEmail = async () => {
+    if (!userConnection?.provider || userConnection.provider === 'none') {
+      toast.error("Please connect your Gmail or Outlook account in Settings before sending emails.");
+      router.push("/dashboard/settings");
+      return;
+    }
+
     setIsSending(true);
     try {
       await fetch(`/api/jobs/${job._id}`, {
@@ -143,7 +157,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-lg cursor-pointer text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700 transition-colors"
+            className="w-8 h-8 shrink-0 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-lg cursor-pointer text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700 transition-colors"
           >
             <X size={16} />
           </button>

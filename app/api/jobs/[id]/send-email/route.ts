@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/app/utils/mongodb";
 import Job from "@/app/models/Job";
 import CoverLetterTemplate from "@/app/models/CoverLetterTemplate";
-import { getEmailService } from "@/app/utils/emailSending/EmailService";
+import { getEmailServiceForUser } from "@/app/utils/emailSending/EmailService";
+import { cookies } from "next/headers";
+import User from "@/app/models/User";
 
 function getNextWorkDayMorning8_58(currentDate: Date): Date {
   const date = new Date(currentDate);
@@ -173,7 +175,15 @@ export async function POST(
       }
     }
 
-    const emailService = getEmailService();
+    const cookieStore = await cookies();
+    const userId = cookieStore.get("builder_auth")?.value;
+
+    const emailService = await getEmailServiceForUser(userId);
+
+    // We should get the user's name for the 'from' field if possible
+    const user = userId ? await User.findById(userId) : null;
+    const senderName = user ? user.name : "Candidate";
+
     const emailResponse = await emailService.sendEmail(
       job.companyEmail,
       coverLetterSubject,

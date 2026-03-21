@@ -6,6 +6,13 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     theme: { type: String, enum: ['light', 'dark'], default: 'light' },
+    emailConnection: {
+      provider: { type: String, enum: ['gmail', 'outlook', 'resend', 'none'], default: 'none' },
+      accessToken: String,
+      refreshToken: String,
+      expiryDate: Number,
+      email: String,
+    },
   },
   { timestamps: true }
 );
