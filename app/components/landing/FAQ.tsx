@@ -8,9 +8,9 @@ import { FadeUp } from "./FadeUp";
 
 const FAQ_DATA = [
   {
-    q: "What About my Data Privacy? I gave all of my details",
-    a: "What Privacy brother?. Your data ,your database.don't care about Security",
-    image: "/backgroundimage.png", // Example: User can replace this later
+    q: "Why you telling us to self-host? Isn't this a SaaS product?",
+    a: "You can still create your resume and test scheduling job application sending via email on our hosted version, but the problem is since this platform is for send job application emails,the email should be sent with your own email, which requires your App Password to be stored on our server. By self-hosting, you can keep your credentials private and secure while still benefiting from our powerful resume-building and email-sending features.",
+    image: "/backgroundimage.png",
   },
   {
     q: "Does it come with pre-built Resume Templates?",
@@ -19,11 +19,15 @@ const FAQ_DATA = [
   },
   {
     q: "How does the email sending work?",
-    a: "You just provide a free Resend.com API Key inside your server environment parameters, and Resume2Apply binds instantly — giving you full permission to auto-send Cover letters via SMTP.",
+    a: "There are 2 options, you can choose either SMTP method or domain method. the SMTP method would send the email in your gmail or outlook email, if you own a domain, you can choose the domain method, which would send the email with your own domain",
   },
   {
     q: "Where is my data stored?",
     a: "In your chosen MongoDB instance. Because it is self-hosted, you hold complete sovereignty over your data and PDFs. No 3rd parties scanning your work history.",
+  },
+   {
+    q: "Does this have docker image?",
+    a: "Yes, you can build it from the source code.",
   },
 ];
 
@@ -51,21 +55,6 @@ const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }
             <div className="px-6 pb-6 text-slate-600 leading-relaxed">
                 {a}
               </div>
-              
-              {image && (
-                <FadeUp>
-                  <div className="relative w-32 mx-auto aspect-square mb-4 mt-4">
-                    <div className="absolute inset-0 bg-white border-[12px] border-white ring-1 ring-black shadow-2xl rounded-sm rotate-3 hover:rotate-0 transition-transform duration-500 overflow-hidden">
-                      <Image 
-                        src={image} 
-                        alt="FAQ Visual" 
-                        fill 
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                </FadeUp>
-              )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -75,7 +64,7 @@ const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }
 
 export function FAQ() {
   return (
-    <section className="py-32 relative z-10 bg-white overflow-hidden">
+    <section id="faq" className="py-24 relative z-10 bg-white overflow-hidden">
       {/* --- Ambient Background --- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-100/40 blur-[100px]" />

@@ -76,7 +76,7 @@ export default function ProfileDataPage() {
       {/* Header */}
     <TitleHeader handleSave={handleSave} saving={saving} />
 
-      <div className="flex gap-6">
+      <div className="flex md:flex-row flex-col gap-6">
        <LeftNavPanel activeTab={activeTab} setActiveTab={setActiveTab} TABS={TABS} activeIdx={activeIdx} />
 
        <RightContentPanel activeTab={activeTab} isLast={isLast} handleSave={handleSave} goNext={goNext} TABS={TABS} SECTION_CONTENT={SECTION_CONTENT} activeIdx={activeIdx} />

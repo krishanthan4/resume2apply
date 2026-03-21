@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, Layers } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { Input } from "@/app/components/ui";
+import { Input, Label } from "@/app/components/ui";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -42,35 +42,41 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[380px]"
-      >
-      <Image src={"/resume2apply.png"} alt="background Image" fill loading="lazy" className="object-contain w-full h-screen -z-10" />
-
-        {/* Card */}
-        <div className="bg-white/80 border border-zinc-200 rounded-[16px] px-7 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] backdrop-blur-sm">
-          <h1 className="text-[22px] font-extrabold text-zinc-900 tracking-[-0.025em] mb-1.5">
-            Welcome back
-          </h1>
-          <p className="text-[13px] text-zinc-500 mb-7">
-            Sign in to your workspace
-          </p>
+    <main className="min-h-screen bg-white selection:bg-blue-200/50 font-sans flex text-slate-900">
+      {/* Left side: Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 relative">
+        <Link href="/" className="absolute top-8 left-8 flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+          Back to home
+        </Link>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-[400px]"
+        >
+          <div className="mb-8">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+              Welcome back
+            </h1>
+            <p className="text-slate-500 font-medium">
+              Sign in to your workspace to continue
+            </p>
+          </div>
 
           {error && (
-            <div className="mb-4 py-2.5 px-3.5 bg-red-50 border border-red-200 rounded-lg text-[13px] text-red-600">
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-sm font-medium text-red-600 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
               {error}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-medium text-gray-700">
-                Email
-              </label>
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <Label className="text-sm font-bold text-slate-800">
+                Email Address
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -78,14 +84,14 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="input-field"
+                className="h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-medium text-gray-700">
+            <div className="flex flex-col gap-2">
+              <Label className="text-sm font-bold text-slate-800">
                 Password
-              </label>
+              </Label>
               <Input
                 id="password"
                 type="password"
@@ -93,31 +99,63 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="input-field"
+                className="h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading || !email || !password}
-              className="mt-1 w-full py-[11px] bg-zinc-900 text-white rounded-[9px] text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:bg-zinc-300 disabled:cursor-not-allowed hover:bg-zinc-800"
+              className="mt-2 w-full h-12 bg-slate-900 text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 transition-all disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-slate-800 shadow-md hover:shadow-lg hover:-translate-y-0.5"
             >
-              {isLoading && <Loader2 size={16} className="animate-spin" />}
+              {isLoading && <Loader2 size={18} className="animate-spin" />}
               {isLoading ? "Signing in…" : "Sign in"}
-            </button> <p className="text-center mt-5 text-[13px] text-zinc-500">
-          Don't have an account?{" "}
-          <Link
-            href="/auth/register"
-            className="text-zinc-900 font-semibold no-underline hover:underline"
-          >
-            Create one
-          </Link>
-        </p>
+            </button>
+            
+            <p className="text-center mt-6 text-sm text-slate-500 font-medium">
+              Don't have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="text-slate-900 font-bold hover:underline underline-offset-4 decoration-2"
+              >
+                Create one
+              </Link>
+            </p>
           </form>
-        </div>
+        </motion.div>
+      </div>
 
-       
-      </motion.div>
+      {/* Right side: Graphic */}
+      <div className="hidden lg:flex w-1/2 bg-slate-50 border-l border-slate-100 items-center justify-center relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/50" />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="relative z-10 max-w-lg p-10"
+        >
+          <div className="relative w-[360px] h-[360px] mx-auto mb-10">
+            <Image 
+              src="/backgroundimage.png" 
+              alt="App Graphic" 
+              fill 
+              sizes="360px"
+              priority
+              className="object-contain drop-shadow-2xl mix-blend-multiply"
+            />
+          </div>
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+              Apply for Jobs In Seconds, <br/>
+              <span className="bg-black text-white px-2 py-0.5 inline-block -rotate-1 mt-1">Not in Hours</span>
+            </h2>
+            <p className="text-lg text-slate-600 font-medium">
+              Customize CV, Schedule Emails, Manage Applying/Applied Jobs
+            </p>
+          </div>
+        </motion.div>
+      </div>
     </main>
-  );
-}
+  );}

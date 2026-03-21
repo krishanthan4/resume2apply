@@ -79,9 +79,9 @@ export default function SettingsPage() {
         </div>
         <div className="p-6">
           <div className="flex justify-between items-center">
-            <div>
+            <div >
               <div className="text-sm font-medium text-zinc-900 mb-[3px]">Sign Out</div>
-              <div className="text-xs text-zinc-500">
+              <div className="text-xs sm:block hidden text-zinc-500">
                 Log out of your current session on this device.
               </div>
             </div>
