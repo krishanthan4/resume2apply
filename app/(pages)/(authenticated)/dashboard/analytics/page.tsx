@@ -88,12 +88,13 @@ export default function AnalyticsPage() {
         </p>
       </div>
 
-      {/* Metric cards */}
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-[14px] mb-6">
+  <div className="grid sm:grid-cols-2 grid-cols-1 w-full gap-3">
+    {/* Metric cards */}
+      <div className="cols-span-1 grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-[14px] mb-6">
         {metrics.map((m) => (
           <div
             key={m.label}
-            className="bg-white border text-zinc-500 border-zinc-200 rounded-[14px] px-5 pt-5 pb-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
+            className="bg-white  border text-zinc-500 border-zinc-200 rounded-[14px] px-5 pt-5 pb-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
           >
             <p className="text-xs text-zinc-500 mb-2">{m.label}</p>
             <p className="text-4xl font-extrabold text-zinc-900 tracking-[-0.025em] leading-none">
@@ -104,7 +105,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Pipeline chart */}
-      <div className="bg-white border border-zinc-200 rounded-[14px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+      <div className="cols-span-2 bg-white border border-zinc-200 rounded-[14px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
         <h2 className="text-[15px] font-bold text-zinc-900 mb-5">
           Pipeline breakdown
         </h2>
@@ -151,6 +152,7 @@ export default function AnalyticsPage() {
           </div>
         )}
       </div>
+  </div>
     </div>
   );
 }

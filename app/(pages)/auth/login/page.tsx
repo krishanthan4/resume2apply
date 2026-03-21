@@ -136,16 +136,7 @@ export default function LoginPage() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="relative z-10 max-w-lg p-10"
         >
-          <div className="relative w-[360px] h-[360px] mx-auto mb-10">
-            <Image 
-              src="/backgroundimage.png" 
-              alt="App Graphic" 
-              fill 
-              sizes="360px"
-              priority
-              className="object-contain drop-shadow-2xl mix-blend-multiply"
-            />
-          </div>
+          
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
               Apply for Jobs In Seconds, <br/>

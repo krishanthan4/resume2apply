@@ -46,11 +46,6 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-white selection:bg-blue-200/50 font-sans flex text-slate-900">
       {/* Left side: Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 relative">
-        <Link href="/" className="absolute top-8 left-8 flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Back to home
-        </Link>
-        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +80,7 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
-                className="h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
+                className="p-4 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
               />
             </div>
 
@@ -100,7 +95,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
+                className="p-4 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
               />
             </div>
 
@@ -115,7 +110,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Choose a strong password"
-                className="h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
+                className="p-4 border-slate-200 focus:border-slate-900 focus:ring-slate-900 rounded-xl text-base shadow-sm"
               />
             </div>
 
@@ -128,7 +123,7 @@ export default function RegisterPage() {
               {isLoading ? "Creating account…" : "Create account"}
             </button>
             
-            <p className="text-center mt-6 text-sm text-slate-500 font-medium">
+            <p className="text-center mt-3 text-sm text-slate-500 font-medium">
               Already have an account?{" "}
               <Link
                 href="/auth/login"
@@ -152,16 +147,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="relative z-10 max-w-lg p-10"
         >
-          <div className="relative w-[360px] h-[360px] mx-auto mb-10">
-            <Image 
-              src="/backgroundimage.png" 
-              alt="App Graphic" 
-              fill 
-              sizes="360px"
-              priority
-              className="object-contain drop-shadow-2xl mix-blend-multiply"
-            />
-          </div>
+        
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
               Apply for Jobs In Seconds, <br/>

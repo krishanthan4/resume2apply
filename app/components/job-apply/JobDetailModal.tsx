@@ -130,28 +130,28 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white border-l border-zinc-200 flex flex-col w-full max-w-[780px] h-full shadow-[-8px_0_40px_rgba(0,0,0,0.10)] overflow-hidden">
+      <div className="bg-white border-l border-zinc-200 flex flex-col w-full md:max-w-[780px] sm:max-w-[600px] h-full shadow-[-8px_0_40px_rgba(0,0,0,0.10)] overflow-hidden">
         {/* Header */}
         <div className="px-6 py-3 border-b border-zinc-200 flex justify-between items-center shrink-0">
-          <div className="flex gap-5">
-            <h2 className="text-lg font-bold text-zinc-900 tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:gap-5 pr-2">
+            <h2 className="text-lg font-bold text-zinc-900 tracking-tight leading-tight line-clamp-2">
               {formData.appliedJobPosition}
             </h2>
-            <p className="text-[13px] text-zinc-500 mt-[3px]">
+            <p className="text-[13px] text-zinc-500 mt-[3px] truncate">
               {formData.companyName}{formData.companyEmail ? ` · ${formData.companyEmail}` : ""}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-lg cursor-pointer text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700 transition-colors"
+            className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-lg cursor-pointer text-zinc-500 hover:bg-zinc-200 hover:text-zinc-700 transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-0">
-          <div className="flex gap-5 flex-wrap">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5 flex flex-col gap-0">
+          <div className="flex flex-col md:flex-row gap-5">
 
             {/* Left: Main info */}
             <JobMainInfo

@@ -66,9 +66,9 @@ export function Hero() {
       {/* Right side floating image (App logos) */}
       <div className="md:col-span-1 right-0 top-0 w-full h-[60vh] lg:h-[80vh] relative z-10 hidden md:block">
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
+                  initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full h-full flex flex-col items-center justify-center"
         >
           <div className="relative w-full h-[120%] lg:absolute lg:top-[-10%] lg:right-[-5%] right-0">

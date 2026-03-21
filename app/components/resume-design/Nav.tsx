@@ -43,8 +43,8 @@ function Nav({config, setConfig, pdfUrl, handleDownload}: {config: any, setConfi
   });
 
   return (
-    <div style={{ height: 56, borderBottom: "1px solid #e4e4e7", background: "#fafafa", display: "flex", alignItems: "center", padding: "0 24px", flexShrink: 0, gap: 16, overflowX: "auto", whiteSpace: "nowrap" }}>
-      <div style={{ display: "flex", gap: 4, background: "#e4e4e7", padding: 4, borderRadius: 8 }}>
+    <div className="h-14 border-b border-zinc-200 bg-zinc-50 flex items-center justify-center shrink-0 gap-4 overflow-x-auto whitespace-nowrap">
+      <div className="flex gap-1 bg-zinc-200 p-1 rounded-lg">
         <Button onClick={setSingleCV} style={btnStyle(config.type === "single")}>Single CV</Button>
         <Button onClick={setDetailedCV} style={btnStyle(config.type === "detailed")}>Detailed CV</Button>
         <Button onClick={setDownloadableSingleCV} style={btnStyle(config.type === "downloadable_single")}>Single Printing</Button>

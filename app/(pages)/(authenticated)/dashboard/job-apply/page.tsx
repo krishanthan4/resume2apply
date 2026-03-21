@@ -114,10 +114,10 @@ export default function JobApplyKanban() {
     });
 
   return (
-    <div className="flex flex-col gap-5 h-full">
+    <div className="flex flex-col gap-5 h-full relative">
       {/* Header */}
-      <div className="flex flex-col justify-between items-start gap-3">
-        <div>
+      <div className="flex flex-col gap-4 ">
+        <div className="">
           <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-1">
             Step 4 — Application Board
           </h1>
@@ -127,48 +127,40 @@ export default function JobApplyKanban() {
         </div>
 
         {/* Controls */}
-        <div className="flex gap-2.5  items-center">
+        <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
           {/* Search */}
           <div className="flex items-center gap-2 py-2 px-3 bg-white border border-zinc-200 rounded-lg">
-            <Search
-              size={14}
-              className=" text-zinc-400"
-            />
+            <Search size={14} className="text-zinc-400" />
             <input
               type="text"
               placeholder="Search jobs…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="text-[13px] hover:placeholder:text-zinc-600 focus:placeholder:text-zinc-600 transition-colors w-[180px] outline-0"
+              className="text-[13px] hover:placeholder:text-zinc-600 focus:placeholder:text-zinc-600 transition-colors w-full sm:w-[180px] outline-none"
             />
           </div>
 
-          {/* Date filter */}
-          <Select
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="input-field w-auto py-2 px-3 text-[13px]"
-          >
-            <option value="all">All time</option>
-            <option value="today">Today</option>
-            <option value="this_week">This week</option>
-            <option value="scheduled">Scheduled</option>
-          </Select>
+          <div className="flex gap-2.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
+            {/* Date filter */}
+            <Select
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="input-field w-auto min-w-[110px] py-2 px-3 text-[13px]"
+            >
+              <option value="all">All time</option>
+              <option value="today">Today</option>
+              <option value="this_week">This week</option>
+              <option value="scheduled">Scheduled</option>
+            </Select>
 
-          <Button
-            variant="outline"
-            className="text-[13px] min-w-[150px] py-2 px-[14px]"
-            onClick={() => setIsCoverLetterModalOpen(true)}
-          >
-            <FileText size={14} /> Cover Letters
-          </Button>
-
-          <Button
-            className="min-w-[150px] text-[13px] py-2 px-[14px]"
-            onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
-          >
-            <Plus size={14} /> New application
-          </Button>
+            <Button
+              variant="outline"
+              className="text-[13px] min-w-max py-2 px-[14px]"
+              onClick={() => setIsCoverLetterModalOpen(true)}
+            >
+              <FileText size={14} /> Cover Letters
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -220,6 +212,26 @@ export default function JobApplyKanban() {
           ))}
         </div>
       )}
+
+      {/* Floating Action Button for Mobile */}
+      <div className="fixed bottom-24 right-4 sm:hidden z-40">
+        <Button
+          className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center p-0"
+          onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
+        >
+          <Plus size={24} />
+        </Button>
+      </div>
+      
+      {/* Desktop Add Button */}
+      <div className="absolute top-0 right-0 hidden sm:block">
+         <Button
+            className="text-[13px] py-2 px-[14px]"
+            onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
+          >
+            <Plus size={14} /> New application
+          </Button>
+      </div>
 
       {isModalOpen && (
         <AddJobModal

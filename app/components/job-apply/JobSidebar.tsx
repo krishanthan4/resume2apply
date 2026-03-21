@@ -19,7 +19,7 @@ export default function JobSidebar({
   handleCancelEmail,
 }: any) {
   return (
-    <div className="w-[240px] shrink-0 flex flex-col gap-3.5">
+    <div className="md:w-[240px] w-full shrink-0 flex flex-col gap-3.5">
       <div className=" border border-zinc-200 rounded-xl p-4 flex flex-col gap-3.5">
         <h3 className="text-[12px] font-semibold text-zinc-500 uppercase tracking-[0.06em]">
           Application
@@ -31,7 +31,7 @@ export default function JobSidebar({
             value={formData.coverLetterId || ""}
             onChange={(e) => handleChange("coverLetterId", e.target.value)}
           >
-            <option value="">— None —</option>
+            <option  value="">— None —</option>
             {templates.map((t: any) => (
               <option key={t._id} value={t._id}>
                 {t.name}

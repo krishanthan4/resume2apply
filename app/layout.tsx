@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="antialiased font-sans">
+      <body className="antialiased font-sans select-none">
         <Toaster position="bottom-right" richColors />
         {children}
       </body>

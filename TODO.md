@@ -98,3 +98,8 @@ when the user comes to the landing page first. he should understand what are the
 then send the the main dashboard. but this should be a guiding thing. i don't like the current sidebar dashboard thingy. this should be modern look. the user should navigate step by step.first in getting the user data. then twicking the cv and slowly sending to apply for jobs, then managing jobs.the user should feel like he waalking down from clouds step by step.the modern and easy thing.use animations. 
 
 - create the properly modular email provider using he decorator pattern. options should be resend (which require to own a domain, )
+
+
+## TODO:
+
+- in the settings choose email method
