@@ -23,26 +23,28 @@ export async function GET(request: Request) {
             throw new Error("Invalid session. Please log in again.");
         }
 
-        const cca = new msal.ConfidentialClientApplication({
-            auth: {
-                clientId: process.env.OUTLOOK_CLIENT_ID!,
-                authority: `https://login.microsoftonline.com/${process.env.OUTLOOK_TENANT_ID || "common"}`,
-                clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
-            },
+        const response = await fetch(`https://login.microsoftonline.com/${process.env.OUTLOOK_TENANT_ID || "common"}/oauth2/v2.0/token`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                client_id: process.env.OUTLOOK_CLIENT_ID!,
+                client_secret: process.env.OUTLOOK_CLIENT_SECRET!,
+                grant_type: "authorization_code",
+                code: code,
+                redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/outlook/callback`,
+            }),
         });
 
-        const tokenResponse = await cca.acquireTokenByCode({
-            code,
-            scopes: ["https://graph.microsoft.com/Mail.Send", "https://graph.microsoft.com/User.Read", "offline_access"],
-            redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/outlook/callback`,
-        });
+        const tokenData = await response.json();
+        if (!tokenData.access_token) {
+            console.error("Outlook Token Exchange Failed:", tokenData);
+            throw new Error(tokenData.error_description || "Token exchange failed");
+        }
 
-        if (!tokenResponse) throw new Error("Token exchange failed");
-
-        // Get email from Microsoft Graph
+        // Get email from Microsoft Graph using the new access token
         const client = Client.init({
             authProvider: (done) => {
-                done(null, tokenResponse.accessToken);
+                done(null, tokenData.access_token);
             },
         });
 
@@ -50,9 +52,9 @@ export async function GET(request: Request) {
 
         await User.findByIdAndUpdate(userId, {
             "emailConnection.provider": "outlook",
-            "emailConnection.accessToken": tokenResponse.accessToken,
-            "emailConnection.refreshToken": (tokenResponse as any).refreshToken,
-            "emailConnection.expiryDate": tokenResponse.expiresOn?.getTime(),
+            "emailConnection.accessToken": tokenData.access_token,
+            "emailConnection.refreshToken": tokenData.refresh_token,
+            "emailConnection.expiryDate": Date.now() + (tokenData.expires_in * 1000),
             "emailConnection.email": userProfile.mail || userProfile.userPrincipalName,
         });
 
@@ -62,3 +64,4 @@ export async function GET(request: Request) {
         return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/settings?status=error&message=${encodeURIComponent(error.message)}`);
     }
 }
+

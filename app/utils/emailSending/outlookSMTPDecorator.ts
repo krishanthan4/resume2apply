@@ -1,7 +1,7 @@
 import { Client } from "@microsoft/microsoft-graph-client";
 import { IEmailService } from "./decorator";
 import User from "@/app/models/User";
-import * as msal from "@azure/msal-node";
+import { refreshOutlookToken } from "./oauth";
 
 export class OutlookOAuthService implements IEmailService {
     private userId: string;
@@ -23,7 +23,9 @@ export class OutlookOAuthService implements IEmailService {
                 throw new Error("User has not connected Outlook");
             }
 
-            const token = await this.getAccessToken(user);
+            const token = await this.getAccessToken();
+            if (!token) throw new Error("Failed to retrieve Outlook access token");
+
 
             const client = Client.init({
                 authProvider: (done) => {
@@ -64,20 +66,8 @@ export class OutlookOAuthService implements IEmailService {
         }
     }
 
-    private async getAccessToken(user: any): Promise<string> {
-        const cca = new msal.ConfidentialClientApplication({
-            auth: {
-                clientId: process.env.OUTLOOK_CLIENT_ID!,
-                authority: `https://login.microsoftonline.com/${process.env.OUTLOOK_TENANT_ID || "common"}`,
-                clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
-            },
-        });
-
-        const result = await cca.acquireTokenByRefreshToken({
-            refreshToken: user.emailConnection.refreshToken!,
-            scopes: ["https://graph.microsoft.com/Mail.Send"],
-        });
-
-        return result?.accessToken || "";
+    private async getAccessToken(): Promise<string | null> {
+        return await refreshOutlookToken(this.userId);
     }
 }
+

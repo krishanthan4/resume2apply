@@ -54,6 +54,11 @@ export async function refreshOutlookToken(userId: string) {
 
         const data = await response.json();
 
+        if (!response.ok) {
+            console.error("Microsoft Token Refresh Error Response:", data);
+            return null;
+        }
+
         if (data.access_token) {
             user.emailConnection.accessToken = data.access_token;
 
@@ -69,11 +74,14 @@ export async function refreshOutlookToken(userId: string) {
 
             await user.save();
             return data.access_token;
+        } else {
+            console.error("Microsoft Refresh Token call succeeded but no access_token found in response:", data);
         }
     } catch (error) {
-        console.error("Error refreshing Outlook token:", error);
+        console.error("Error refreshing Outlook token (Network/Fetch Error):", error);
     }
 
     return null;
 }
+
 
