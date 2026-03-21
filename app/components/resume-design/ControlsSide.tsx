@@ -3,6 +3,8 @@ import ReorderContent from "./ReorderContent";
 import ResumeBuilderTabs from "./ResumeBuilderTabs";
 import StylesTabContent from "./StylesTabContent";
 import TemplatesTabContent from "./TemplatesTabContent";
+import { Button } from "@/app/components/ui";
+
 
 function ControlSide({
   config,
@@ -79,7 +81,7 @@ function ControlSide({
       </div>
 
       <div style={{ padding: "16px 20px", background: "#fff", borderTop: "1px solid #e4e4e7", display: "flex", gap: 8 }}>
-        <button
+        <Button
           disabled={!resumeData || isGenerating}
           onClick={generatePreview}
           style={{
@@ -100,9 +102,9 @@ function ControlSide({
         >
           {isGenerating && <Loader2 size={14} className="animate-spin" />}
           Generate
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={handleDownload}
           disabled={!pdfUrl || isGenerating}
           style={{
@@ -122,9 +124,9 @@ function ControlSide({
           }}
         >
           <Download size={14} /> PDF
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleApplyToJobClick}
           style={{
             flex: 2,
@@ -143,7 +145,7 @@ function ControlSide({
           }}
         >
           <FileText size={14} /> Use for Job
-        </button>
+        </Button>
       </div>
     </aside>
   );

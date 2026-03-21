@@ -3,32 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 import { useJobBoardStore } from "@/app/store/useJobBoardStore";
+import { Input } from "../ui/Input";
+import { Label } from "../ui/Label";
+import { Button } from "@/app/components/ui";
+
 
 interface AddJobModalProps {
   onClose: () => void;
   onJobCreated: (job: any) => void;
   initialData?: any;
 }
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "9px 12px",
-  background: "#fff",
-  border: "1px solid #e4e4e7",
-  borderRadius: 8,
-  fontSize: 13,
-  color: "#18181b",
-  outline: "none",
-  fontFamily: "inherit",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 500,
-  color: "#52525b",
-  marginBottom: 5,
-  display: "block",
-};
 
 export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJobModalProps) {
   const [formData, setFormData] = useState<any>({
@@ -121,7 +105,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
         }}
       >
         {/* Close */}
-        <button
+        <Button
           onClick={onClose}
           style={{
             position: "absolute",
@@ -140,7 +124,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
           }}
         >
           <X size={14} />
-        </button>
+        </Button>
 
         <h2 style={{ fontSize: 17, fontWeight: 700, color: "#18181b", letterSpacing: "-0.02em", marginBottom: 22 }}>
           New application
@@ -148,57 +132,46 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
 
         <form onSubmit={handleCreateJob} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div>
-            <label style={labelStyle}>Position</label>
-            <input
+            <Label>Position</Label>
+            <Input
               type="text"
               required
               value={formData.appliedJobPosition}
               onChange={(e) => set("appliedJobPosition", e.target.value)}
               placeholder="e.g. Senior Fullstack Engineer"
-              style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
             />
           </div>
           <div>
-            <label style={labelStyle}>Company name</label>
-            <input
+            <Label>Company name</Label>
+            <Input
               type="text"
               required
               value={formData.companyName}
               onChange={(e) => set("companyName", e.target.value)}
               placeholder="e.g. Acme Corp"
-              style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
             />
           </div>
           <div>
-            <label style={labelStyle}>Company email <span style={{ color: "#a1a1aa", fontWeight: 400 }}>(optional)</span></label>
-            <input
+            <Label>Company email <span style={{ color: "#a1a1aa", fontWeight: 400 }}>(optional)</span></Label>
+            <Input
               type="email"
               value={formData.companyEmail}
               onChange={(e) => set("companyEmail", e.target.value)}
               placeholder="careers@company.com"
-              style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
             />
           </div>
           <div>
-            <label style={labelStyle}>Job posted date</label>
-            <input
+            <Label>Job posted date</Label>
+            <Input
               type="date"
               required
               value={formData.jobPostedDate}
               onChange={(e) => set("jobPostedDate", e.target.value)}
-              style={{ ...inputStyle, colorScheme: "light" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting}
             style={{
@@ -220,7 +193,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
           >
             {isSubmitting && <Loader2 size={15} className="animate-spin" />}
             {isSubmitting ? "Saving…" : "Save application"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

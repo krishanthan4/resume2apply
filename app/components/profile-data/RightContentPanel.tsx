@@ -2,6 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import { Button } from "@/app/components/ui";
+
 
 function RightContentPanel({activeTab, isLast, handleSave, goNext, TABS, SECTION_CONTENT,activeIdx}:{
     activeTab: string;
@@ -38,9 +40,9 @@ function RightContentPanel({activeTab, isLast, handleSave, goNext, TABS, SECTION
                 Continue to CV Design <ArrowRight size={14} />
               </Link>
             ) : (
-              <button className="btn-primary" style={{ fontSize: 13 }} onClick={goNext}>
+              <Button className="btn-primary" style={{ fontSize: 13 }} onClick={goNext}>
                 Next: {TABS[activeIdx + 1]?.label} <ChevronRight size={14} />
-              </button>
+              </Button>
             )}
           </div>
         </div>    )

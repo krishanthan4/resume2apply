@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { Loader2, Check, FileText } from "lucide-react";
+import { Input } from "@/app/components/ui/Input";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Label } from "@/app/components/ui/Label";
+import { Button } from "@/app/components/ui";
+
 
 export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreated?: () => void }) {
   const [title, setTitle] = useState("");
@@ -47,8 +52,8 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
       </h3>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Template Title</label>
-          <input 
+          <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Template Title</Label>
+          <Input 
             type="text" 
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -59,8 +64,8 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Short Summary (Used for Single CV)</label>
-          <textarea 
+          <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Short Summary (Used for Single CV)</Label>
+          <TextArea 
             value={shortSummery}
             onChange={(e) => setShortSummery(e.target.value)}
             className="textarea-field"
@@ -70,8 +75,8 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Detailed Summary (Used for Detailed CV)</label>
-          <textarea 
+          <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Detailed Summary (Used for Detailed CV)</Label>
+          <TextArea 
             value={detailedSummery}
             onChange={(e) => setDetailedSummery(e.target.value)}
             className="textarea-field"
@@ -80,7 +85,7 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
           />
         </div>
 
-        <button 
+        <Button 
           type="submit" 
           disabled={isSubmitting || !title || (!shortSummery && !detailedSummery)}
           className="btn-primary"
@@ -92,7 +97,7 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
             <Check size={14} />
           ) : null}
           {isSubmitting ? "Saving..." : success ? "Created!" : "Save Template"}
-        </button>
+        </Button>
       </form>
     </div>
   );

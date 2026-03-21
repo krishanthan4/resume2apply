@@ -1,5 +1,7 @@
 import { RotateCcw } from 'lucide-react'
 import React from 'react'
+import { Button } from "@/app/components/ui";
+
 
 interface SectionTitleWithResetProps {
   title: string;
@@ -14,7 +16,7 @@ export default function SectionTitleWithReset({ title, icon, onReset }: SectionT
         {icon}
         {title}
       </h3>
-      <button
+      <Button
         type="button"
         onClick={onReset}
         style={{
@@ -35,7 +37,7 @@ export default function SectionTitleWithReset({ title, icon, onReset }: SectionT
         title="Reset settings"
       >
         <RotateCcw size={14} />
-      </button>
+      </Button>
     </div>
   )
 }

@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import PersonalInfoSection from "@/app/components/portfolio-data/PersonalSection";
-import ExperienceSection from "@/app/components/portfolio-data/ExperienceSection";
-import ProjectsSection from "@/app/components/portfolio-data/ProjectsSection";
-import SkillsSection from "@/app/components/portfolio-data/SkillsSection";
-import EducationSection from "@/app/components/portfolio-data/EducationSection";
-import { TABS } from "@/app/components/portfolio-data/Tabs";
-import RightContentPanel from "@/app/components/portfolio-data/RightContentPanel";
-import LeftNavPanel from "@/app/components/portfolio-data/LeftNavPanel";
-import TitleHeader from "@/app/components/portfolio-data/TitleHeader";
-import Loader from "@/app/components/portfolio-data/Loader";
+import PersonalInfoSection from "@/app/components/profile-data/PersonalSection";
+import ExperienceSection from "@/app/components/profile-data/ExperienceSection";
+import ProjectsSection from "@/app/components/profile-data/ProjectsSection";
+import SkillsSection from "@/app/components/profile-data/SkillsSection";
+import EducationSection from "@/app/components/profile-data/EducationSection";
+import { TABS } from "@/app/components/profile-data/Tabs";
+import RightContentPanel from "@/app/components/profile-data/RightContentPanel";
+import LeftNavPanel from "@/app/components/profile-data/LeftNavPanel";
+import TitleHeader from "@/app/components/profile-data/TitleHeader";
+import Loader from "@/app/components/profile-data/Loader";
 
 export default function ProfileDataPage() {
   const [activeTab, setActiveTab] = useState("personal");

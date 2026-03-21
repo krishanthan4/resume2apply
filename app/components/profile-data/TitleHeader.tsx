@@ -1,4 +1,6 @@
 import { Loader2, Save } from "lucide-react";
+import { Button } from "@/app/components/ui";
+
 
 function TitleHeader({ handleSave, saving}: {handleSave: () => void, saving: boolean}) {
     return (
@@ -11,9 +13,9 @@ function TitleHeader({ handleSave, saving}: {handleSave: () => void, saving: boo
             Fill in your information once. It will be used to generate tailored CVs.
           </p>
         </div>
-        <button onClick={handleSave} className="btn-secondary" style={{ fontSize: 13, opacity: saving ? 0.7 : 1 }}>
+        <Button onClick={handleSave} className="btn-secondary" style={{ fontSize: 13, opacity: saving ? 0.7 : 1 }}>
           {saving ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />} {saving ? "Saving" : "Save Cloud"}
-        </button>
+        </Button>
       </div>
     )
 }

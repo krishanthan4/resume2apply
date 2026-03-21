@@ -1,5 +1,5 @@
 import Field from "./Field";
-import Input from "./Input";
+import { Input } from "@/app/components/ui/Input";
 
 function PersonalInfoSection({ data, onChange }: { data: any, onChange: (d: any) => void }) {
   const update = (key: string, val: string) => onChange({ ...data, personalDetails: { ...(data.personalDetails || {}), [key]: val } });

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Reorder } from "framer-motion";
 import { GripVertical, ChevronDown, ChevronUp } from "lucide-react";
+import { Input } from "@/app/components/ui/Input";
+import { TextArea } from "@/app/components/ui/TextArea";
 
 export default function ReorderContent({ resumeData, setResumeData, config, setConfig }: { resumeData: any, setResumeData: any, config?: any, setConfig?: any }) {
   const [expandedExp, setExpandedExp] = useState<number | null>(null);
@@ -76,7 +78,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
               {expandedExp === index && (
                 <div style={{ paddingLeft: 26, display: "flex", flexDirection: "column", gap: 6 }}>
                   <div style={{ fontSize: 12, color: "#52525b" }}>Bullets (Achievements):</div>
-                  <textarea 
+                  <TextArea 
                     className="textarea-field"
                     style={{ minHeight: 120, fontSize: 13 }}
                     value={(exp.achievements || []).join("\n")}
@@ -109,7 +111,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
               {expandedProj === index && (
                 <div style={{ paddingLeft: 26, display: "flex", flexDirection: "column", gap: 6 }}>
                   <div style={{ fontSize: 12, color: "#52525b" }}>Bullets (Description):</div>
-                  <textarea 
+                  <TextArea 
                     className="textarea-field"
                     style={{ minHeight: 100, fontSize: 13 }}
                     value={(proj.description || []).join("\n")}
@@ -132,7 +134,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
         {config?.type?.includes("single") && (
           <div style={{ background: "#fafafa", border: "1px solid #e4e4e7", borderRadius: 8, padding: 12, marginBottom: 16 }}>
             <div style={{ fontSize: 12, color: "#52525b", marginBottom: 8 }}>Custom Skills for Single CV (2 bullets)</div>
-            <input 
+            <Input 
               type="text" 
               className="input-field"
               style={{ padding: "6px 10px", fontSize: 13, marginBottom: 8 }}
@@ -153,7 +155,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
               }}
               placeholder="Bullet point 1..."
             />
-            <input 
+            <Input 
               type="text" 
               className="input-field"
               style={{ padding: "6px 10px", fontSize: 13 }}
@@ -182,7 +184,7 @@ export default function ReorderContent({ resumeData, setResumeData, config, setC
             <Reorder.Item key={skillGroup._key || index} value={skillGroup} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", background: "#ffffff", border: "1px solid #e4e4e7", borderRadius: 8, boxShadow: "0 1px 2px rgba(0,0,0,0.02)" }}>
               <GripVertical size={14} style={{ color: "#a1a1aa", cursor: "grab" }} />
               <div style={{ fontSize: 13, fontWeight: 500, color: "#18181b", width: 120 }}>{skillGroup.category}</div>
-              <input 
+              <Input 
                 type="text" 
                 className="input-field"
                 style={{ flex: 1, padding: "6px 10px", fontSize: 13 }}

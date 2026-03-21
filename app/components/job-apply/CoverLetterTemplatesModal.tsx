@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { X, Save, Plus, Trash2, Loader2 } from "lucide-react";
+import { Input } from "@/app/components/ui/Input";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Label } from "@/app/components/ui/Label";
+import { Button } from "@/app/components/ui";
+
 
 export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => void }) {
   const [templates, setTemplates] = useState<any[]>([]);
@@ -177,8 +182,8 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
 
           <form onSubmit={handleSave} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Template name</label>
-              <input
+              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Template name</Label>
+              <Input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -190,8 +195,8 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
             </div>
 
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email subject</label>
-              <input
+              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email subject</Label>
+              <Input
                 required
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
@@ -206,8 +211,8 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
             </div>
 
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email body</label>
-              <textarea
+              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email body</Label>
+              <TextArea
                 required
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
@@ -225,7 +230,7 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 8, borderTop: "1px solid #e4e4e7" }}>
-              <button
+              <Button
                 type="submit"
                 disabled={!name || !subject || !body}
                 style={{
@@ -244,7 +249,7 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
               >
                 <Save size={14} />
                 {editingId ? "Update" : "Save template"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

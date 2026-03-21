@@ -1,7 +1,9 @@
 import { Plus, Trash2 } from "lucide-react";
 import Field from "./Field";
-import Textarea from "./TextArea";
-import Input from "./Input";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Input } from "@/app/components/ui/Input";
+import { Button } from "@/app/components/ui";
+
 
 function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => void }) {
   const items = data.skillsData || [];
@@ -15,19 +17,19 @@ function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => vo
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>Skills</h3>
-        <button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
+        <Button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
           <Plus size={13} /> Add Category
-        </button>
+        </Button>
       </div>
       {items.map((item: any, i: number) => (
         <div key={i} style={{ background: "#fafafa", border: "1px solid #e4e4e7", borderRadius: 12, padding: "16px", position: "relative" }}>
-          <button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
+          <Button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
             <Trash2 size={14} />
-          </button>
+          </Button>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <Field label="Category Name (optional)"><Input placeholder="e.g. Frontend Development" value={item.category || ""} onChange={(e) => update(i, "category", e.target.value)} /></Field>
             <Field label="Skills (comma separated)">
-              <Textarea placeholder="React, Next.js, TypeScript..." style={{ minHeight: 64 }} value={(item.skills || []).join(",")} onChange={(e) => update(i, "skills", e.target.value.split(","))} />
+              <TextArea placeholder="React, Next.js, TypeScript..." style={{ minHeight: 64 }} value={(item.skills || []).join(",")} onChange={(e) => update(i, "skills", e.target.value.split(","))} />
             </Field>
           </div>
         </div>

@@ -1,4 +1,6 @@
 import React from "react";
+import { Label } from "@/app/components/ui/Label";
+import { Select } from "@/app/components/ui/Select";
 
 export default function ExecutiveSummeryTemplateSeletor({
   config,
@@ -11,15 +13,15 @@ export default function ExecutiveSummeryTemplateSeletor({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>
+      <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>
         Executive Summary Template
-      </label>
+      </Label>
       {(execTemplates || []).length === 0 ? (
         <div style={{ fontSize: 12, color: "#71717a", fontStyle: "italic" }}>
           No templates found. Create one.
         </div>
       ) : (
-        <select
+        <Select
           value={config.execTemplateId || ""}
           onChange={(e) => setConfig({ ...config, execTemplateId: e.target.value })}
           className="input-field"
@@ -30,7 +32,7 @@ export default function ExecutiveSummeryTemplateSeletor({
               {t.title}
             </option>
           ))}
-        </select>
+        </Select>
       )}
     </div>
   );

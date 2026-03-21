@@ -1,5 +1,7 @@
 import { Download } from 'lucide-react'
 import React from 'react'
+import { Button } from "@/app/components/ui";
+
 
 function Nav({config, setConfig, pdfUrl, handleDownload}: {config: any, setConfig: React.Dispatch<React.SetStateAction<any>>, pdfUrl: string | null, handleDownload: () => void}) {
 
@@ -43,10 +45,10 @@ function Nav({config, setConfig, pdfUrl, handleDownload}: {config: any, setConfi
   return (
     <div style={{ height: 56, borderBottom: "1px solid #e4e4e7", background: "#fafafa", display: "flex", alignItems: "center", padding: "0 24px", flexShrink: 0, gap: 16, overflowX: "auto", whiteSpace: "nowrap" }}>
       <div style={{ display: "flex", gap: 4, background: "#e4e4e7", padding: 4, borderRadius: 8 }}>
-        <button onClick={setSingleCV} style={btnStyle(config.type === "single")}>Single CV</button>
-        <button onClick={setDetailedCV} style={btnStyle(config.type === "detailed")}>Detailed CV</button>
-        <button onClick={setDownloadableSingleCV} style={btnStyle(config.type === "downloadable_single")}>Single Printing</button>
-        <button onClick={setDownloadableDetailedCV} style={btnStyle(config.type === "downloadable_detailed")}>Detailed Printing</button>
+        <Button onClick={setSingleCV} style={btnStyle(config.type === "single")}>Single CV</Button>
+        <Button onClick={setDetailedCV} style={btnStyle(config.type === "detailed")}>Detailed CV</Button>
+        <Button onClick={setDownloadableSingleCV} style={btnStyle(config.type === "downloadable_single")}>Single Printing</Button>
+        <Button onClick={setDownloadableDetailedCV} style={btnStyle(config.type === "downloadable_detailed")}>Detailed Printing</Button>
       </div>
     </div>
   )

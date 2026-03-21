@@ -8,6 +8,8 @@ import JobDetailModal from "@/app/components/job-apply/JobDetailModal";
 import CoverLetterTemplatesModal from "@/app/components/job-apply/CoverLetterTemplatesModal";
 import KanbanColumn from "@/app/components/job-apply/KanbanColumn";
 import AddJobModal from "@/app/components/job-apply/AddJobModal";
+import { Button } from "@/app/components/ui/Button";
+import { Input, Select } from "@/app/components/ui";
 
 const COLUMNS = [
   { id: "willing_to_apply", title: "Wishlist", color: "#3b82f6" },
@@ -114,7 +116,7 @@ export default function JobApplyKanban() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20, height: "100%" }}>
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 4 }}>
             Step 4 — Application Board
@@ -132,7 +134,7 @@ export default function JobApplyKanban() {
               size={14}
               style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#a1a1aa" }}
             />
-            <input
+            <Input
               type="text"
               placeholder="Search jobs…"
               value={searchTerm}
@@ -143,7 +145,7 @@ export default function JobApplyKanban() {
           </div>
 
           {/* Date filter */}
-          <select
+          <Select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
             className="input-field"
@@ -153,23 +155,24 @@ export default function JobApplyKanban() {
             <option value="today">Today</option>
             <option value="this_week">This week</option>
             <option value="scheduled">Scheduled</option>
-          </select>
+          </Select>
 
-          <button
+          <Button
+          variant="outline"
             className="btn-secondary"
             style={{ fontSize: 13, padding: "8px 14px" }}
             onClick={() => setIsCoverLetterModalOpen(true)}
           >
             <FileText size={14} /> Cover Letters
-          </button>
+          </Button>
 
-          <button
+          <Button
             className="btn-primary"
             style={{ fontSize: 13, padding: "8px 14px" }}
             onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
           >
             <Plus size={14} /> New application
-          </button>
+          </Button>
         </div>
       </div>
 

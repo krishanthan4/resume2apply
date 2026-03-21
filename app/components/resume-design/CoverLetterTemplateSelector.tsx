@@ -1,4 +1,6 @@
 import React from "react";
+import { Label } from "@/app/components/ui/Label";
+import { Select } from "@/app/components/ui/Select";
 
 export default function CoverLetterTemplateSelector({
   config,
@@ -11,8 +13,8 @@ export default function CoverLetterTemplateSelector({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Select Cover Letter Template</label>
-      <select
+      <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Select Cover Letter Template</Label>
+      <Select
         className="input-field"
         value={config.coverLetterTemplateId || ""}
         onChange={(e) => setConfig({ ...config, coverLetterTemplateId: e.target.value })}
@@ -23,7 +25,7 @@ export default function CoverLetterTemplateSelector({
             {t.name}
           </option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 }

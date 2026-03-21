@@ -3,6 +3,8 @@ import { Settings } from "lucide-react";
 import RadiusLine from "./RadiusLine";
 import ToggleOption from "./ToggleOption";
 import SectionTitleWithReset from "./SectionTitleWithReset";
+import { Input } from "@/app/components/ui/Input";
+import { Label } from "@/app/components/ui/Label";
 
 interface StylesTabContentProps {
   config: any;
@@ -45,8 +47,8 @@ export default function StylesTabContent({ config, setConfig }: StylesTabContent
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
-          <label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>Title Color</label>
-          <input
+          <Label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>Title Color</Label>
+          <Input
             type="color"
             value={config.titleColor}
             onChange={(e) => setConfig({ ...config, titleColor: e.target.value })}
@@ -99,20 +101,20 @@ export default function StylesTabContent({ config, setConfig }: StylesTabContent
         </h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Top ({config.pagePaddingTop})</label>
-            <input type="number" step="0.1" value={config.pagePaddingTop} onChange={(e) => setConfig({...config, pagePaddingTop: parseFloat(e.target.value)})} className="input-field" style={{ padding: "8px 10px" }} />
+            <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Top ({config.pagePaddingTop})</Label>
+            <Input type="number" step="0.1" value={config.pagePaddingTop} onChange={(e) => setConfig({...config, pagePaddingTop: parseFloat(e.target.value)})} className="input-field" style={{ padding: "8px 10px" }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Bottom ({config.pagePaddingBottom})</label>
-            <input type="number" step="0.1" value={config.pagePaddingBottom} onChange={(e) => setConfig({ ...config, pagePaddingBottom: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
+            <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Bottom ({config.pagePaddingBottom})</Label>
+            <Input type="number" step="0.1" value={config.pagePaddingBottom} onChange={(e) => setConfig({ ...config, pagePaddingBottom: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Left ({config.pagePaddingLeft})</label>
-            <input type="number" step="0.1" value={config.pagePaddingLeft} onChange={(e) => setConfig({ ...config, pagePaddingLeft: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
+            <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Left ({config.pagePaddingLeft})</Label>
+            <Input type="number" step="0.1" value={config.pagePaddingLeft} onChange={(e) => setConfig({ ...config, pagePaddingLeft: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Right ({config.pagePaddingRight})</label>
-            <input type="number" step="0.1" value={config.pagePaddingRight} onChange={(e) => setConfig({ ...config, pagePaddingRight: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
+            <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Right ({config.pagePaddingRight})</Label>
+            <Input type="number" step="0.1" value={config.pagePaddingRight} onChange={(e) => setConfig({ ...config, pagePaddingRight: parseFloat(e.target.value) })} className="input-field" style={{ padding: "8px 10px" }} />
           </div>
         </div>
       </div>

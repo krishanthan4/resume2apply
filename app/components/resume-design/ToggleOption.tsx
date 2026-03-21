@@ -1,4 +1,6 @@
 import React from "react";
+import { Input } from "@/app/components/ui/Input";
+import { Label } from "@/app/components/ui/Label";
 
 interface ToggleOptionProps {
   label: string;
@@ -8,7 +10,7 @@ interface ToggleOptionProps {
 
 function ToggleOption({ label, checked, onChange }: ToggleOptionProps) {
   return (
-    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: 12 }}>
+    <Label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: 12 }}>
       <div 
         style={{
           width: 32,
@@ -33,14 +35,14 @@ function ToggleOption({ label, checked, onChange }: ToggleOptionProps) {
           }}
         />
       </div>
-      <input
+      <Input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
         style={{ display: "none" }}
       />
       <span style={{ fontSize: 13, color: "#18181b", fontWeight: 500 }}>{label}</span>
-    </label>
+    </Label>
   );
 }
 

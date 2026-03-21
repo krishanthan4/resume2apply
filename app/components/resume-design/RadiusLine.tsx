@@ -1,4 +1,6 @@
 import React from "react";
+import { Input } from "@/app/components/ui/Input";
+import { Label } from "@/app/components/ui/Label";
 
 interface RadiusLineProps {
   label: string;
@@ -14,10 +16,10 @@ function RadiusLine({ label, value, min, max, step, unit = "px", onChange }: Rad
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>{label}</label>
+        <Label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>{label}</Label>
         <span style={{ fontSize: 12, color: "#71717a", fontFamily: "monospace" }}>{value}{unit}</span>
       </div>
-      <input
+      <Input
         type="range"
         min={min}
         max={max}

@@ -1,3 +1,4 @@
+import { Button } from "@/app/components/ui";
 function LeftNavPanel({activeTab, setActiveTab, TABS, activeIdx}:{
     activeTab: string;
     setActiveTab: (tab: string) => void;
