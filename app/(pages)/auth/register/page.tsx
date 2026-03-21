@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Loader2, Layers } from "lucide-react";
+import Image from "next/image";
+import { Input, Label } from "@/app/components/ui";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -41,87 +43,33 @@ export default function RegisterPage() {
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#fafafa",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-      }}
-    >
+    <main className="min-h-screen flex items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        style={{ width: "100%", maxWidth: 380 }}
+        className="w-full max-w-[380px]"
       >
-        {/* Logo */}
-        <Link
-          href="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 36,
-            textDecoration: "none",
-            color: "#18181b",
-          }}
-        >
-          <Layers size={18} strokeWidth={1.8} />
-          <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: "-0.02em" }}>
-            Resume2Apply
-          </span>
-        </Link>
+           <Image src={"/resume2apply.png"} alt="background Image" fill loading="lazy" className="object-contain w-full h-screen -z-10" />
 
         {/* Card */}
-        <div
-          style={{
-            background: "#fff",
-            border: "1px solid #e4e4e7",
-            borderRadius: 16,
-            padding: "32px 28px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: 22,
-              fontWeight: 800,
-              color: "#18181b",
-              letterSpacing: "-0.025em",
-              marginBottom: 6,
-            }}
-          >
+        <div className="bg-white/80 border border-zinc-200 rounded-[16px] px-7 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.04)] backdrop-blur-sm">
+          <h1 className="text-[22px] font-extrabold text-zinc-900 tracking-[-0.025em] mb-1.5">
             Create your account
           </h1>
-          <p style={{ fontSize: 13, color: "#71717a", marginBottom: 28 }}>
-            Set up your Resume2Apply workspace
-          </p>
 
           {error && (
-            <div
-              style={{
-                marginBottom: 18,
-                padding: "10px 14px",
-                background: "#fef2f2",
-                border: "1px solid #fecaca",
-                borderRadius: 8,
-                fontSize: 13,
-                color: "#dc2626",
-              }}
-            >
+            <div className="mb-4 py-2.5 px-3.5 bg-red-50 border border-red-200 rounded-lg text-[13px] text-red-600">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+          <form onSubmit={handleRegister} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[13px] font-medium text-gray-700">
                 Full name
-              </label>
-              <input
+              </Label>
+              <Input
                 id="name"
                 type="text"
                 required
@@ -132,11 +80,11 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[13px] font-medium text-gray-700">
                 Email
-              </label>
-              <input
+              </Label>
+              <Input
                 id="email"
                 type="email"
                 required
@@ -147,11 +95,11 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 13, fontWeight: 500, color: "#374151" }}>
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[13px] font-medium text-gray-700">
                 Password
-              </label>
-              <input
+              </Label>
+              <Input
                 id="password"
                 type="password"
                 required
@@ -165,39 +113,23 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading || !name || !email || !password}
-              style={{
-                marginTop: 4,
-                width: "100%",
-                padding: "11px 0",
-                background: isLoading || !name || !email || !password ? "#d4d4d8" : "#18181b",
-                color: "#fff",
-                border: "none",
-                borderRadius: 9,
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: isLoading || !name || !email || !password ? "not-allowed" : "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                transition: "background 0.15s",
-              }}
+              className="mt-1 w-full py-[11px] bg-zinc-900 text-white rounded-[9px] text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:bg-zinc-300 disabled:cursor-not-allowed hover:bg-zinc-800"
             >
               {isLoading && <Loader2 size={16} className="animate-spin" />}
               {isLoading ? "Creating account…" : "Create account"}
             </button>
-          </form>
-        </div>
-
-        <p style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "#71717a" }}>
+              <p className="text-center mt-5 text-[13px] text-zinc-500">
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            style={{ color: "#18181b", fontWeight: 600, textDecoration: "none" }}
+            className="text-zinc-900 font-semibold no-underline hover:underline"
           >
             Sign in
           </Link>
         </p>
+          </form>
+        </div>
+
       </motion.div>
     </main>
   );

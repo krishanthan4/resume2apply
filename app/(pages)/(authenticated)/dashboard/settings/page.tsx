@@ -1,88 +1,99 @@
 "use client";
 
-import React from "react";
-import { Sun } from "lucide-react";
+import React, { useState } from "react";
+import { Sun, LogOut, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/auth/login");
+      router.refresh();
+    } catch (e) {
+      console.error(e);
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 6 }}>
+    <div className="max-w-[640px] mx-auto">
+      <div className="mb-7">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-1.5">
           Settings
         </h1>
-        <p style={{ fontSize: 14, color: "#71717a" }}>
+        <p className="text-sm text-zinc-500">
           Platform configuration for your Resume2Apply workspace.
         </p>
       </div>
 
       {/* Card */}
-      <div
-        style={{
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        }}
-      >
-        <div style={{ padding: "18px 24px", borderBottom: "1px solid #f4f4f5" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#18181b" }}>Appearance</div>
+      <div className="bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Appearance</div>
         </div>
 
-        <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="p-6 flex justify-between items-center">
           <div>
-            <div style={{ fontSize: 14, fontWeight: 500, color: "#18181b", marginBottom: 3 }}>Theme</div>
-            <div style={{ fontSize: 12, color: "#71717a" }}>
+            <div className="text-sm font-medium text-zinc-900 mb-[3px]">Theme</div>
+            <div className="text-xs text-zinc-500">
               This platform uses a clean white theme. Dark mode coming soon.
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 14px",
-              background: "#f4f4f5",
-              border: "1px solid #e4e4e7",
-              borderRadius: 99,
-              fontSize: 13,
-              fontWeight: 500,
-              color: "#52525b",
-            }}
-          >
+          <div className="flex items-center gap-2 py-2 px-[14px] bg-zinc-100 border border-zinc-200 rounded-full text-[13px] font-medium text-zinc-600">
             <Sun size={14} /> Light
           </div>
         </div>
       </div>
 
       {/* About card */}
-      <div
-        style={{
-          marginTop: 14,
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        }}
-      >
-        <div style={{ padding: "18px 24px", borderBottom: "1px solid #f4f4f5" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#18181b" }}>About</div>
+      <div className="mt-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">About</div>
         </div>
-        <div style={{ padding: "20px 24px" }}>
-          <dl style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div className="p-6">
+          <dl className="flex flex-col gap-3">
             {[
               ["Platform", "Resume2Apply"],
               ["Version", "0.1.0"],
               ["Mode", "Self-hosted"],
               ["Database", "MongoDB (Mongoose)"],
             ].map(([label, value]) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
-                <dt style={{ fontSize: 13, color: "#71717a" }}>{label}</dt>
-                <dd style={{ fontSize: 13, fontWeight: 500, color: "#18181b" }}>{value}</dd>
+              <div key={label} className="flex justify-between">
+                <dt className="text-[13px] text-zinc-500">{label}</dt>
+                <dd className="text-[13px] font-medium text-zinc-900">{value}</dd>
               </div>
             ))}
           </dl>
+        </div>
+      </div>
+
+      {/* Account card */}
+      <div className="mt-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Account</div>
+        </div>
+        <div className="p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="text-sm font-medium text-zinc-900 mb-[3px]">Sign Out</div>
+              <div className="text-xs text-zinc-500">
+                Log out of your current session on this device.
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="flex items-center gap-2 py-2 px-[14px] bg-red-50 hover:bg-red-100 border border-red-200 rounded-full text-[13px] font-medium text-red-600 transition-colors disabled:opacity-50"
+            >
+              {isLoggingOut ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
     </div>

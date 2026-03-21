@@ -36,11 +36,14 @@ function RightContentPanel({activeTab, isLast, handleSave, goNext, TABS, SECTION
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16 }}>
             <div></div>
             {isLast ? (
-              <Link href="/dashboard/resume-design" onClick={handleSave} className="btn-primary" style={{ fontSize: 13, textDecoration: "none" }}>
+              <a href="/dashboard/resume-design">
+                <Button onClick={handleSave}>
                 Continue to CV Design <ArrowRight size={14} />
-              </Link>
+
+                </Button>
+              </a>
             ) : (
-              <Button className="btn-primary" style={{ fontSize: 13 }} onClick={goNext}>
+              <Button style={{ fontSize: 13 }} onClick={goNext}>
                 Next: {TABS[activeIdx + 1]?.label} <ChevronRight size={14} />
               </Button>
             )}

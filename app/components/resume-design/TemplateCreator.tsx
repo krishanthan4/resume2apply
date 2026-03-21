@@ -4,6 +4,7 @@ import { Input } from "@/app/components/ui/Input";
 import { TextArea } from "@/app/components/ui/TextArea";
 import { Label } from "@/app/components/ui/Label";
 import { Button } from "@/app/components/ui";
+import { toast } from "sonner";
 
 
 export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreated?: () => void }) {
@@ -34,11 +35,11 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
         setDetailedSummery("");
         if (onTemplateCreated) onTemplateCreated();
       } else {
-        alert("Failed to create template.");
+        toast.success("Failed to create template.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error occurred.");
+      toast.success("Error occurred.");
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setSuccess(false), 3000);

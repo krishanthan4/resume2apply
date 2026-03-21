@@ -40,7 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         break;
     }
 
-    const baseStyles = 'inline-flex items-center gap-2 justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2';
+    const baseStyles = 'inline-flex items-center gap-2 justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 cursor-pointer';
     
     // Combine them all
     const combinedClassName = `${baseStyles} ${variantStyles} ${sizeStyles} ${className}`.trim();

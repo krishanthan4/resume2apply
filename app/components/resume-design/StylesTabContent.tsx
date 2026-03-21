@@ -34,7 +34,7 @@ export default function StylesTabContent({ config, setConfig }: StylesTabContent
           })} 
         />
         
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           <RadiusLine label="Base Font Size" value={config.fontSizeBase} min={8} max={14} step={0.5} unit="pt" onChange={(v) => setConfig({ ...config, fontSizeBase: v })} />
           <RadiusLine label="Title Font Size" value={config.fontSizeTitle} min={10} max={18} step={0.5} unit="pt" onChange={(v) => setConfig({ ...config, fontSizeTitle: v })} />
           <RadiusLine label="Line Height" value={config.lineHeightBase} min={1} max={2} step={0.1} unit="" onChange={(v) => setConfig({ ...config, lineHeightBase: v })} />
@@ -46,7 +46,7 @@ export default function StylesTabContent({ config, setConfig }: StylesTabContent
           <RadiusLine label="Section Title Padding Top" value={config.sectionTitleBoxPaddingTop} min={0} max={20} step={1} onChange={(v) => setConfig({ ...config, sectionTitleBoxPaddingTop: v })} />
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 3 }}>
           <Label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>Title Color</Label>
           <Input
             type="color"

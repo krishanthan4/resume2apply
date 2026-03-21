@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import ControlSide from "@/app/components/resume-design/ControlsSide";
 import PDFView from "@/app/components/resume-design/PDFView";
+import { Button, TextArea } from "@/app/components/ui";
 
 export default function CustomResumeBuilderPage() {
   const router = useRouter();
@@ -174,7 +175,7 @@ export default function CustomResumeBuilderPage() {
   };
 
   return (
-    <div style={{ display: "flex", gap: 24, height: "calc(100vh - 120px)", marginTop: -12 }}>
+    <div className="flex gap-6 h-[calc(100vh-120px)] -mt-3">
       {/* Left sidebar: Controls */}
     <ControlSide
     config={config}
@@ -201,28 +202,27 @@ export default function CustomResumeBuilderPage() {
       />
 
       {showExecSummaryModal && (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(24, 24, 27, 0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 12, padding: 24, width: "100%", maxWidth: 500, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#18181b" }}>Verify Executive Summary</h3>
-              <button onClick={() => setShowExecSummaryModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#a1a1aa" }}><X size={18} /></button>
+        <div className="fixed inset-0 bg-zinc-900/40 flex items-center justify-center z-[100] p-5">
+          <div className="bg-white rounded-xl p-6 w-full max-w-[500px] shadow-lg flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-base font-bold text-zinc-900">Verify Executive Summary</h3>
+              <button onClick={() => setShowExecSummaryModal(false)} className="bg-transparent border-none cursor-pointer text-zinc-400 hover:text-zinc-600 transition-colors"><X size={18} /></button>
             </div>
-            <p style={{ fontSize: 13, color: "#71717a" }}>
+            <p className="text-[13px] text-zinc-500">
               Before we send this application to the Kanban board, do you need to make any final adjustments to your executive summary?
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Executive Summary content</label>
-              <textarea
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-zinc-600">Executive Summary content</label>
+              <TextArea
                 value={tempExecSummary}
                 onChange={(e) => setTempExecSummary(e.target.value)}
-                className="textarea-field"
-                style={{ minHeight: 140 }}
+                className="textarea-field min-h-[140px]"
                 placeholder="Adjust summary..."
               />
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 12 }}>
-              <button className="btn-secondary" onClick={() => setShowExecSummaryModal(false)}>Cancel</button>
-              <button className="btn-primary" onClick={confirmApplyToJob}>Confirm & Apply</button>
+            <div className="flex justify-end gap-2.5 mt-3">
+              <Button variant="outline" onClick={() => setShowExecSummaryModal(false)}>Cancel</Button>
+              <Button   onClick={confirmApplyToJob}>Confirm & Apply</Button>
             </div>
           </div>
         </div>

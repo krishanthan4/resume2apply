@@ -17,7 +17,7 @@ function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => vo
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>Skills</h3>
-        <Button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
+        <Button variant='secondary' style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
           <Plus size={13} /> Add Category
         </Button>
       </div>

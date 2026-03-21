@@ -4,14 +4,17 @@ const TargetCompanySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     industry: { type: String },
-    website: { type: String },
     notes: { type: String },
+    linkedinPageUrl: { type: String },
+    website: { type: String },
+    description: { type: String },
+    whyApply: { type: String },
+    order: { type: Number, default: 0 },
     contacts: [
       {
         name: { type: String },
         role: { type: String },
         linkedinUrl: { type: String },
-        portfolioUrl: { type: String },
         email: { type: String },
       }
     ],

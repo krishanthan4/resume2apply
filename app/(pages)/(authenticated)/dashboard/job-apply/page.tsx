@@ -114,33 +114,32 @@ export default function JobApplyKanban() {
     });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20, height: "100%" }}>
+    <div className="flex flex-col gap-5 h-full">
       {/* Header */}
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+      <div className="flex flex-col justify-between items-start gap-3">
         <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 4 }}>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-1">
             Step 4 — Application Board
           </h1>
-          <p style={{ fontSize: 14, color: "#71717a" }}>
+          <p className="text-sm text-zinc-500">
             Drag cards across columns to track your applications.
           </p>
         </div>
 
         {/* Controls */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="flex gap-2.5  items-center">
           {/* Search */}
-          <div style={{ position: "relative" }}>
+          <div className="flex items-center gap-2 py-2 px-3 bg-white border border-zinc-200 rounded-lg">
             <Search
               size={14}
-              style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#a1a1aa" }}
+              className=" text-zinc-400"
             />
-            <Input
+            <input
               type="text"
               placeholder="Search jobs…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-field"
-              style={{ paddingLeft: 32, width: 200, padding: "8px 12px 8px 30px", fontSize: 13 }}
+              className="text-[13px] hover:placeholder:text-zinc-600 focus:placeholder:text-zinc-600 transition-colors w-[180px] outline-0"
             />
           </div>
 
@@ -148,8 +147,7 @@ export default function JobApplyKanban() {
           <Select
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="input-field"
-            style={{ width: "auto", padding: "8px 12px", fontSize: 13 }}
+            className="input-field w-auto py-2 px-3 text-[13px]"
           >
             <option value="all">All time</option>
             <option value="today">Today</option>
@@ -158,17 +156,15 @@ export default function JobApplyKanban() {
           </Select>
 
           <Button
-          variant="outline"
-            className="btn-secondary"
-            style={{ fontSize: 13, padding: "8px 14px" }}
+            variant="outline"
+            className="text-[13px] min-w-[150px] py-2 px-[14px]"
             onClick={() => setIsCoverLetterModalOpen(true)}
           >
             <FileText size={14} /> Cover Letters
           </Button>
 
           <Button
-            className="btn-primary"
-            style={{ fontSize: 13, padding: "8px 14px" }}
+            className="min-w-[150px] text-[13px] py-2 px-[14px]"
             onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
           >
             <Plus size={14} /> New application
@@ -178,41 +174,27 @@ export default function JobApplyKanban() {
 
       {/* Kanban board */}
       {isLoading ? (
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#a1a1aa" }}>
+        <div className="flex-1 flex items-center justify-center text-zinc-400">
           <Loader2 size={28} className="animate-spin" />
         </div>
       ) : (
-        <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingBottom: 12, flex: 1 }} className="scrollbar-hide">
+        <div className="flex gap-[14px] overflow-x-auto pb-3 flex-1 scrollbar-hide">
           {COLUMNS.map((col) => (
             <div
               key={col.id}
-              style={{ minWidth: 240, flex: 1, display: "flex", flexDirection: "column", gap: 0 }}
+              className="min-w-[240px] flex-1 flex flex-col gap-0"
             >
               {/* Column header */}
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "10px 12px",
-                  background: "#fff",
-                  border: "1px solid #e4e4e7",
-                  borderBottom: "none",
-                  borderRadius: "12px 12px 0 0",
-                }}
+                className="flex items-center gap-2 py-2.5 px-3 bg-white border border-zinc-200 border-b-0 rounded-t-xl"
               >
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: col.color }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#18181b" }}>{col.title}</span>
+                <div 
+                  className="w-2 h-2 rounded-full" 
+                  style={{ background: col.color }} 
+                />
+                <span className="text-xs font-semibold text-zinc-900">{col.title}</span>
                 <span
-                  style={{
-                    marginLeft: "auto",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#a1a1aa",
-                    background: "#f4f4f5",
-                    padding: "2px 7px",
-                    borderRadius: 99,
-                  }}
+                  className="ml-auto text-[11px] font-semibold text-zinc-400 bg-zinc-100 py-0.5 px-[7px] rounded-full"
                 >
                   {filteredJobs(col.id).length}
                 </span>
@@ -222,14 +204,7 @@ export default function JobApplyKanban() {
               <div
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, col.id)}
-                style={{
-                  flex: 1,
-                  background: "#fafafa",
-                  border: "1px solid #e4e4e7",
-                  borderRadius: "0 0 12px 12px",
-                  padding: "10px",
-                  minHeight: 300,
-                }}
+                className="flex-1 bg-zinc-50 border border-zinc-200 rounded-b-xl p-2.5 min-h-[300px]"
               >
                 <KanbanColumn
                   column={{ id: col.id, title: col.title, color: `bg-[${col.color}]` }}
@@ -261,7 +236,11 @@ export default function JobApplyKanban() {
           job={selectedJob}
           onClose={() => setSelectedJob(null)}
           onUpdate={(updatedData) =>
-            setJobs((prev) => prev.map((job) => (job._id === updatedData._id ? updatedData : job)))
+            setJobs((prev) => 
+              updatedData === null
+                ? prev.filter((job) => job._id !== selectedJob._id)
+                : prev.map((job) => (job._id === updatedData._id ? updatedData : job))
+            )
           }
         />
       )}

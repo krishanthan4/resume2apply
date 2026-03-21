@@ -39,7 +39,7 @@ export default function AnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div style={{ height: "60vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#a1a1aa" }}>
+      <div className="h-[60vh] flex items-center justify-center text-zinc-400">
         <Loader2 size={28} className="animate-spin" />
       </div>
     );
@@ -77,32 +77,26 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+    <div className="max-w-[900px] mx-auto">
       {/* Header */}
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 6 }}>
+      <div className="mb-7">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-[6px]">
           Step 5 — Analytics
         </h1>
-        <p style={{ fontSize: 14, color: "#71717a" }}>
+        <p className="text-sm text-zinc-500">
           Track your application activity and pipeline health.
         </p>
       </div>
 
       {/* Metric cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14, marginBottom: 24 }}>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-[14px] mb-6">
         {metrics.map((m) => (
           <div
             key={m.label}
-            style={{
-              background: "#fff",
-              border: "1px solid #e4e4e7",
-              borderRadius: 14,
-              padding: "20px 20px 18px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-            }}
+            className="bg-white border text-zinc-500 border-zinc-200 rounded-[14px] px-5 pt-5 pb-[18px] shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
           >
-            <p style={{ fontSize: 12, color: "#71717a", marginBottom: 8 }}>{m.label}</p>
-            <p style={{ fontSize: 36, fontWeight: 800, color: "#18181b", letterSpacing: "-0.025em", lineHeight: 1 }}>
+            <p className="text-xs text-zinc-500 mb-2">{m.label}</p>
+            <p className="text-4xl font-extrabold text-zinc-900 tracking-[-0.025em] leading-none">
               {m.value}
             </p>
           </div>
@@ -110,24 +104,16 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Pipeline chart */}
-      <div
-        style={{
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          padding: "24px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        }}
-      >
-        <h2 style={{ fontSize: 15, fontWeight: 700, color: "#18181b", marginBottom: 20 }}>
+      <div className="bg-white border border-zinc-200 rounded-[14px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <h2 className="text-[15px] font-bold text-zinc-900 mb-5">
           Pipeline breakdown
         </h2>
         {pieData.length === 0 ? (
-          <div style={{ height: 200, display: "flex", alignItems: "center", justifyContent: "center", color: "#a1a1aa", fontSize: 14 }}>
+          <div className="h-[200px] flex items-center justify-center text-zinc-400 text-sm">
             No applications tracked yet. Start adding jobs in Step 4.
           </div>
         ) : (
-          <div style={{ height: 300 }}>
+          <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -157,7 +143,7 @@ export default function AnalyticsPage() {
                   iconType="circle"
                   iconSize={8}
                   formatter={(value) => (
-                    <span style={{ fontSize: 12, color: "#71717a" }}>{value}</span>
+                    <span className="text-xs text-zinc-500">{value}</span>
                   )}
                 />
               </PieChart>

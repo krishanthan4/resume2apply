@@ -105,7 +105,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
         }}
       >
         {/* Close */}
-        <Button
+        <button
           onClick={onClose}
           style={{
             position: "absolute",
@@ -124,7 +124,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
           }}
         >
           <X size={14} />
-        </Button>
+        </button>
 
         <h2 style={{ fontSize: 17, fontWeight: 700, color: "#18181b", letterSpacing: "-0.02em", marginBottom: 22 }}>
           New application

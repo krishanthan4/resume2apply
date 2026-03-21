@@ -1,62 +1,37 @@
-import { CheckCircle2, Settings } from 'lucide-react';
+"use client";
+
+import { CheckCircle2, Settings, ChevronUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react'
+import React, { useState } from 'react'
 
 function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, STEPS: { num: number; label: string; sublabel: string; path: string; icon: React.ReactNode }[], activeIdx: number }) {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
-     <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 40,
-          background: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(14px)",
-          borderBottom: "1px solid #e4e4e7",
-        }}
-      >
+     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-[14px] border-b border-zinc-200">
         {/* Brand row */}
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 24px",
-            height: 52,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="max-w-[1200px] mx-auto px-6 h-[52px] flex items-center justify-between">
           <Link
             href="/dashboard/resume-design"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              textDecoration: "none",
-              color: "#18181b",
-            }}
+            className="flex items-center gap-2 no-underline text-zinc-900"
           >
-            <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: "-0.02em" }}>
+            <span className="font-bold text-sm tracking-[-0.02em]">
               Resume2Apply
             </span>
           </Link>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              title={isExpanded ? "Hide Steps" : "Show Steps"}
+              className="w-[34px] h-[34px] flex items-center justify-center rounded-lg no-underline transition-all duration-150 text-zinc-500 bg-transparent hover:bg-zinc-100 hover:text-zinc-900 border-none cursor-pointer"
+            >
+              {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
             <Link
               href="/dashboard/settings"
               title="Settings"
-              style={{
-                width: 34,
-                height: 34,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 8,
-                color: pathname.startsWith("/dashboard/settings") ? "#18181b" : "#71717a",
-                background: pathname.startsWith("/dashboard/settings") ? "#f4f4f5" : "transparent",
-                textDecoration: "none",
-                transition: "background 0.15s, color 0.15s",
-              }}
+              className={`w-[34px] h-[34px] flex items-center justify-center rounded-lg no-underline transition-all duration-150 ${pathname.startsWith("/dashboard/settings") ? "text-zinc-900 bg-zinc-100" : "text-zinc-500 bg-transparent"}`}
             >
               <Settings size={16} />
             </Link>
@@ -64,22 +39,9 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
         </div>
 
         {/* Step progress bar */}
-        <div
-          style={{
-            borderTop: "1px solid #f4f4f5",
-            background: "#fff",
-          }}
-        >
+        <div className={`bg-white transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? "max-h-[100px] border-t border-zinc-100 opacity-100" : "max-h-0 border-t-0 opacity-0"}`}>
           <div
-            style={{
-              maxWidth: 1200,
-              margin: "0 auto",
-              padding: "0 24px",
-              display: "flex",
-              alignItems: "stretch",
-              overflowX: "auto",
-            }}
-            className="scrollbar-hide"
+            className="max-w-[1200px] mx-auto px-6 flex items-stretch overflow-x-auto scrollbar-hide"
           >
             {STEPS.map((step, i) => {
               const isActive = i === activeIdx;
@@ -89,49 +51,16 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
                 <React.Fragment key={step.num}>
                   <Link
                     href={step.path}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "10px 16px 10px",
-                      borderBottom: isActive
-                        ? "2px solid #18181b"
-                        : "2px solid transparent",
-                      textDecoration: "none",
-                      whiteSpace: "nowrap",
-                      transition: "border-color 0.2s",
-                      position: "relative",
-                    }}
+                    className={`flex items-center gap-2.5 py-2.5 px-4 border-b-2 no-underline whitespace-nowrap transition-colors duration-200 relative ${isActive ? "border-zinc-900" : "border-transparent"}`}
                   >
                     {/* Circle number */}
                     <div
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: isDone
-                          ? "#18181b"
-                          : isActive
-                          ? "#18181b"
-                          : "#fff",
-                        border: isDone || isActive ? "none" : "1.5px solid #d4d4d8",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                        transition: "background 0.2s",
-                      }}
+                      className={`w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${isDone || isActive ? "bg-zinc-900 border-none" : "bg-white border-[1.5px] border-zinc-300"}`}
                     >
                       {isDone ? (
                         <CheckCircle2 size={12} color="#fff" strokeWidth={2.5} />
                       ) : (
-                        <span
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 700,
-                            color: isActive ? "#fff" : "#a1a1aa",
-                          }}
-                        >
+                        <span className={`text-[10px] font-bold ${isActive ? "text-white" : "text-zinc-400"}`}>
                           {step.num}
                         </span>
                       )}
@@ -139,18 +68,10 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
 
                     {/* Label */}
                     <div>
-                      <div
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 600,
-                          color: isActive || isDone ? "#18181b" : "#a1a1aa",
-                          lineHeight: 1.2,
-                          transition: "color 0.2s",
-                        }}
-                      >
+                      <div className={`text-xs font-semibold leading-[1.2] transition-colors duration-200 ${isActive || isDone ? "text-zinc-900" : "text-zinc-400"}`}>
                         {step.label}
                       </div>
-                      <div style={{ fontSize: 10, color: "#a1a1aa", lineHeight: 1.2 }}>
+                      <div className="text-[10px] text-zinc-400 leading-[1.2]">
                         {step.sublabel}
                       </div>
                     </div>
@@ -158,16 +79,7 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
 
                   {/* Connector line between steps */}
                   {i < STEPS.length - 1 && (
-                    <div
-                      style={{
-                        alignSelf: "center",
-                        width: 20,
-                        height: 1,
-                        background: i < activeIdx ? "#18181b" : "#e4e4e7",
-                        flexShrink: 0,
-                        transition: "background 0.3s",
-                      }}
-                    />
+                    <div className={`self-center w-5 h-[1px] shrink-0 transition-colors duration-300 ${i < activeIdx ? "bg-zinc-900" : "bg-zinc-200"}`} />
                   )}
                 </React.Fragment>
               );
