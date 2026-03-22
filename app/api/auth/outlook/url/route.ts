@@ -10,9 +10,17 @@ export async function GET() {
     });
 
     const authCodeUrlParameters = {
-        scopes: ["https://graph.microsoft.com/Mail.Send", "https://graph.microsoft.com/User.Read", "offline_access"],
+        scopes: [
+            "https://graph.microsoft.com/Mail.Send",
+            "https://graph.microsoft.com/User.Read",
+            "offline_access",
+            "openid",
+            "profile"
+        ],
         redirectUri: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/outlook/callback`,
+        prompt: "select_account",
     };
+
 
     const url = await pca.getAuthCodeUrl(authCodeUrlParameters);
 

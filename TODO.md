@@ -53,12 +53,12 @@
 
     - > stage 2 - preview & other details
         - select executive summeries
-        - create executive summery templates
+        - create executive summary templates
     - > stage 3 - features in custom-resume-design
         - which allows to make all the small twiks to the tempalate, edit content, arrange content etc.
             when the user clicks on apply
                 - before sending to job-apply
-                    - show custom-executive summery to edit completely if needed.
+                    - show custom-executive summary to edit completely if needed.
                     - it should show the PDF and ask do you need any extra edit, if not redirect.
 
 

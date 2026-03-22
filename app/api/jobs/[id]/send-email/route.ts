@@ -3,7 +3,7 @@ import dbConnect from "@/app/utils/mongodb";
 import Job from "@/app/models/Job";
 import CoverLetterTemplate from "@/app/models/CoverLetterTemplate";
 import { getEmailServiceForUser } from "@/app/utils/emailSending/EmailService";
-import { cookies } from "next/headers";
+import { getSession } from "@/app/lib/auth";
 import User from "@/app/models/User";
 
 function getNextWorkDayMorning8_58(currentDate: Date): Date {
@@ -68,20 +68,25 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const { id } = await context.params;
     const body = await request.json();
     const { sendImmediately, coverLetterId, customScheduleTime } = body;
 
-    const job = await Job.findById(id);
-    if (!job) return NextResponse.json({ success: false, error: "Job not found" }, { status: 404 });
+    const job = await Job.findOne({ _id: id, userId: session.userId });
+    if (!job) return NextResponse.json({ success: false, error: "Job not found or access denied" }, { status: 404 });
     if (!job.companyEmail) return NextResponse.json({ success: false, error: "No company email on job" }, { status: 400 });
 
     let coverLetterSubject = `Application for ${job.appliedJobPosition}`;
     let coverLetterHtml = `<p>Hi,</p><p>I'm applying for the <b>${job.appliedJobPosition}</b> at ${job.companyName}.</p>`;
 
     if (coverLetterId) {
-      const template = await CoverLetterTemplate.findById(coverLetterId);
+      const template = await CoverLetterTemplate.findOne({ _id: coverLetterId, userId: session.userId });
       if (template) {
         // Robust placeholder replacements for various keys
         coverLetterSubject = template.subject
@@ -125,9 +130,9 @@ export async function POST(
           // We need to fetch that template text to override the payload
           try {
             const ExecutiveSummaryTemplate = require("@/app/models/ExecutiveSummaryTemplate").default;
-            const execData = await ExecutiveSummaryTemplate.findById(job.execSummaryId).lean();
-            if (execData && execData.content) {
-              payload.selectedExecutiveSummaryText = execData.content;
+            const execData = await ExecutiveSummaryTemplate.findOne({ _id: job.execSummaryId, userId: session.userId }).lean();
+            if (execData && (execData.detailedSummary || execData.shortSummary)) {
+              payload.selectedExecutiveSummaryText = execData.detailedSummary || execData.shortSummary;
             }
           } catch (e) { }
         }
@@ -144,7 +149,13 @@ export async function POST(
         if (job.execSummaryId) {
           resumeUrl += `&execSummaryId=${job.execSummaryId}`;
         }
-        resumePdfRes = await fetch(resumeUrl);
+        // Note: For internal fetch, we might need to pass session cookie if needed, 
+        // but here it's likely just a public-ish generator or needs bearer.
+        // Actually /api/resume now has auth, so we MUST pass the cookie.
+        const cookie = request.headers.get("cookie");
+        resumePdfRes = await fetch(resumeUrl, {
+          headers: cookie ? { "Cookie": cookie } : {}
+        });
       }
 
       if (resumePdfRes.ok) {
@@ -175,13 +186,10 @@ export async function POST(
       }
     }
 
-    const cookieStore = await cookies();
-    const userId = cookieStore.get("builder_auth")?.value;
-
-    const emailService = await getEmailServiceForUser(userId);
+    const emailService = await getEmailServiceForUser(session.userId);
 
     // We should get the user's name for the 'from' field if possible
-    const user = userId ? await User.findById(userId) : null;
+    const user = await User.findById(session.userId);
     const senderName = user ? user.name : "Candidate";
 
     const emailResponse = await emailService.sendEmail(
@@ -218,3 +226,5 @@ export async function POST(
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+

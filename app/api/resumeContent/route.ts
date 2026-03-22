@@ -2,24 +2,28 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/app/utils/mongodb";
 import BaseResume from "@/app/models/ResumeContent";
 import ExecutiveSummaryTemplate from "@/app/models/ExecutiveSummaryTemplate";
-import mongoose from "mongoose";
+import { getSession } from "@/app/lib/auth";
 
 export async function GET() {
   try {
-    await dbConnect();
-    // Assuming single-user mode for now, fetch the first base resume
-    let resume = await BaseResume.findOne().lean();
-    if (!resume) {
-      resume = {};
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const execTemplates = await ExecutiveSummaryTemplate.find().lean();
-    const generalExecSummary = await ExecutiveSummaryTemplate.findOne({ title: { $regex: /general executive summary/i } }).lean();
+    await dbConnect();
+    let resume = await BaseResume.findOne({ userId: session.userId }).lean();
+
+    const execTemplates = await ExecutiveSummaryTemplate.find({ userId: session.userId }).lean();
+    const generalExecSummary = await ExecutiveSummaryTemplate.findOne({
+      userId: session.userId,
+      title: { $regex: /general executive summary/i }
+    }).lean();
 
     return NextResponse.json({
       success: true,
       resumeData: {
-        ...resume,
+        ...(resume || {}),
         generalExecutiveSummary: generalExecSummary || null
       },
       execTemplates,
@@ -32,22 +36,20 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     await dbConnect();
     const body = await request.json();
-    const { _id, ...updateData } = body;
+    const { _id, userId: bodyUserId, ...updateData } = body;
 
-    let result;
-    if (!_id) {
-      // Create new dummy userId if not authenticated
-      const dummyUserId = new mongoose.Types.ObjectId();
-      result = await BaseResume.create({ ...updateData, userId: dummyUserId });
-    } else {
-      result = await BaseResume.findByIdAndUpdate(
-        _id,
-        { $set: updateData },
-        { new: true, upsert: true }
-      );
-    }
+    let result = await BaseResume.findOneAndUpdate(
+      { userId: session.userId },
+      { $set: { ...updateData, userId: session.userId } },
+      { new: true, upsert: true }
+    );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
@@ -55,3 +57,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Failed to save resume" }, { status: 500 });
   }
 }
+

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const TargetCompanySchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
     industry: { type: String },
     notes: { type: String },
@@ -21,5 +22,6 @@ const TargetCompanySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 
 export default mongoose.models.TargetCompany || mongoose.model("TargetCompany", TargetCompanySchema);

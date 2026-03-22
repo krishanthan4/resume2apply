@@ -108,7 +108,7 @@ export default function CustomResumeBuilderPage() {
       if (config.execTemplateId) {
         const t = execTemplates.find(x => x._id === config.execTemplateId);
         if (t) {
-          currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
+          currentExecTemplateText = config.type.includes("single") ? (t.shortSummary || t.content) : (t.detailedSummary || t.content);
         }
       }
 
@@ -157,10 +157,10 @@ export default function CustomResumeBuilderPage() {
     if (config.execTemplateId) {
       const t = execTemplates.find(x => x._id === config.execTemplateId);
       if (t) {
-        currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
+        currentExecTemplateText = config.type.includes("single") ? (t.shortSummary || t.content) : (t.detailedSummary || t.content);
       }
     }
-    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.generalExecutiveSummary?.detailedSummery || resumeData?.generalExecutiveSummary?.content || "");
+    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.generalExecutiveSummary?.detailedSummary || resumeData?.generalExecutiveSummary?.content || "");
     setShowExecSummaryModal(true);
   };
 

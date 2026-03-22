@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FileText, Plus } from "lucide-react";
 import TemplateCreator from "./TemplateCreator";
-import ExecutiveSummeryTemplateSeletor from "./Selectors/ExecutiveSummeryTemplateSeletor";
+import ExecutiveSummaryTemplateSeletor from "./Selectors/ExecutiveSummaryTemplateSeletor";
 import { Input } from "@/app/components/ui/Input";
 import { Label } from "@/app/components/ui/Label";
 import { Button } from "@/app/components/ui";
@@ -69,7 +69,7 @@ export default function TemplatesTabContent({
           />
         </div>
         
-        <ExecutiveSummeryTemplateSeletor config={config} setConfig={setConfig} execTemplates={execTemplates} />
+        <ExecutiveSummaryTemplateSeletor config={config} setConfig={setConfig} execTemplates={execTemplates} />
       </div>
     </div>
   );

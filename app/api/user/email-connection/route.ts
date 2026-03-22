@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/app/utils/mongodb";
 import User from "@/app/models/User";
-import { cookies } from "next/headers";
+import { getSession } from "@/app/lib/auth";
 
 export async function DELETE() {
     try {
         await dbConnect();
-        const cookieStore = await cookies();
-        const userId = cookieStore.get("builder_auth")?.value;
+        const session = await getSession();
+        const userId = session?.userId;
 
-        if (!userId || !/^[0-9a-fA-F]{24}$/.test(userId)) {
+        if (!userId) {
             return NextResponse.json({ success: false, error: "Not authenticated" }, { status: 401 });
         }
 
@@ -29,3 +29,4 @@ export async function DELETE() {
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 }
+

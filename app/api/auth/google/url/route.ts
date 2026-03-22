@@ -5,9 +5,15 @@ export async function GET() {
     const oauth2Client = getGoogleOAuthClient();
     const url = oauth2Client.generateAuthUrl({
         access_type: "offline",
-        scope: ["https://www.googleapis.com/auth/gmail.send", "https://www.googleapis.com/auth/userinfo.email"],
+        scope: [
+            "https://www.googleapis.com/auth/gmail.send",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "openid"
+        ],
         prompt: "consent",
     });
+
 
     return NextResponse.json({ url });
 }

@@ -74,7 +74,7 @@ export function Comparison() {
               <ul className="space-y-1 w-full">
                 {[
                   "Choose the resume type (1 sec)",
-                  "choose a summery template (2 secs)",
+                  "choose a summary template (2 secs)",
                   "add company name & appling position (5 secs)",
                   "create new job application (8 secs)",
                   "Select cover letter template (2 secs)",
