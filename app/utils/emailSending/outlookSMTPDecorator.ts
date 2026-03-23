@@ -15,7 +15,8 @@ export class OutlookOAuthService implements IEmailService {
         subject: string,
         body: string,
         attachments?: any[],
-        scheduledAt?: string
+        scheduledAt?: string,
+        bcc?: string
     ): Promise<any> {
         try {
             const user = await User.findById(this.userId);
@@ -47,6 +48,13 @@ export class OutlookOAuthService implements IEmailService {
                             },
                         },
                     ],
+                    bccRecipients: bcc ? [
+                        {
+                            emailAddress: {
+                                address: bcc,
+                            },
+                        },
+                    ] : [],
                     attachments: attachments?.map(att => ({
                         "@odata.type": "#microsoft.graph.fileAttachment",
                         name: att.filename,
@@ -56,6 +64,7 @@ export class OutlookOAuthService implements IEmailService {
                 },
                 saveToSentItems: "true",
             };
+
 
             const res = await client.api("/me/sendMail").post(sendMailPayload);
 

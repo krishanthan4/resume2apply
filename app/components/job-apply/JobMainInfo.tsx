@@ -45,6 +45,36 @@ export default function JobMainInfo({
 
   return (
     <div className="flex-1 min-w-[280px] flex flex-col gap-[18px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-[14px]">
+        <div>
+          <Label>Job Position</Label>
+          <Input
+            value={formData.appliedJobPosition || ""}
+            onChange={(e) => handleChange("appliedJobPosition", e.target.value)}
+            placeholder="e.g. Senior Fullstack Engineer"
+            className="text-[13px]"
+          />
+        </div>
+        <div>
+          <Label>Company Name</Label>
+          <Input
+            value={formData.companyName || ""}
+            onChange={(e) => handleChange("companyName", e.target.value)}
+            placeholder="e.g. Acme Corp"
+            className="text-[13px]"
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <Label>Company Email</Label>
+          <Input
+            value={formData.companyEmail || ""}
+            onChange={(e) => handleChange("companyEmail", e.target.value)}
+            placeholder="hr@company.com"
+            className="text-[13px]"
+          />
+        </div>
+      </div>
+
       <div>
         <Label>Job Description</Label>
         <TextArea

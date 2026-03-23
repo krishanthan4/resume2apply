@@ -100,6 +100,7 @@ export default function JobDetailModal({ job, onClose, onUpdate }: JobDetailModa
           sendImmediately: scheduleOption === "immediate",
           customScheduleTime: scheduleOption === "custom" ? customTime : null,
           coverLetterId: formData.coverLetterId,
+          resumeFileName: formData.resumeFileName,
         }),
       });
       const json = await res.json();

@@ -29,7 +29,9 @@ const JobSchema = new mongoose.Schema(
     },
     coverLetterId: { type: mongoose.Schema.Types.ObjectId, ref: "CoverLetterTemplate" },
     execSummaryId: { type: String },
+    resumeFileName: { type: String },
     scheduledEmailDate: { type: Date }, // For tracking scheduled times
+
     scheduleStatus: { type: String, enum: ["pending", "sent", "cancelled"] },
     resendEmailId: { type: String }, // Stores the Resend API ID for cancellation
   },

@@ -68,7 +68,21 @@ export default function JobSidebar({
         </div>
 
         <div>
+          <Label>Resume File Name</Label>
+          <Input 
+            value={formData.resumeFileName || ""}
+            onChange={(e) => handleChange("resumeFileName", e.target.value)}
+            placeholder="e.g. name__company__resume.pdf"
+            className="text-[12px] mt-1"
+          />
+          <p className="text-[10px] text-zinc-400 mt-1 leading-tight">
+            Default: [Your Name]__[Company]__resume.pdf
+          </p>
+        </div>
+
+        <div>
           <Label>Send option</Label>
+
           <Select
             value={scheduleOption}
             onChange={(e) => setScheduleOption(e.target.value)}

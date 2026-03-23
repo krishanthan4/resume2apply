@@ -18,6 +18,11 @@ const UserSchema = new mongoose.Schema(
       expiryDate: Number,
       email: String,
     },
+    bccSettings: {
+      enabled: { type: Boolean, default: false },
+      customEmail: { type: String, default: "" }, // If empty, can default to user.email
+    },
+
   },
   { timestamps: true }
 );

@@ -112,6 +112,10 @@ export async function POST(
       html: coverLetterHtml,
     };
 
+    // Get user info for custom filename
+    const user = await User.findById(session.userId);
+    const userName = user?.name || "Candidate";
+
     // Attach CV dynamically
     // Call the internal resume API to generate PDF base64
     try {
@@ -151,7 +155,6 @@ export async function POST(
         }
         // Note: For internal fetch, we might need to pass session cookie if needed, 
         // but here it's likely just a public-ish generator or needs bearer.
-        // Actually /api/resume now has auth, so we MUST pass the cookie.
         const cookie = request.headers.get("cookie");
         resumePdfRes = await fetch(resumeUrl, {
           headers: cookie ? { "Cookie": cookie } : {}
@@ -161,9 +164,23 @@ export async function POST(
       if (resumePdfRes.ok) {
         const arrayBuffer = await resumePdfRes.arrayBuffer();
         const base64Pdf = Buffer.from(arrayBuffer).toString("base64");
+
+        // Use custom filename if provided, otherwise standard format
+        let customName = body.resumeFileName || job.resumeFileName;
+        let finalFileName;
+
+        if (customName && customName.trim()) {
+          finalFileName = customName.trim().replace(/\s+/g, '_');
+          if (!finalFileName.toLowerCase().endsWith('.pdf')) {
+            finalFileName += '.pdf';
+          }
+        } else {
+          finalFileName = `${userName.replace(/\s+/g, '_')}__${job.companyName.replace(/\s+/g, '_')}__resume.pdf`;
+        }
+
         resendOptions.attachments = [
           {
-            filename: `${job.companyName.replace(/\s+/g, '_')}_Resume.pdf`,
+            filename: finalFileName,
             content: base64Pdf,
           },
         ];
@@ -173,6 +190,7 @@ export async function POST(
     } catch (e) {
       console.log("Failed to fetch/attach CV PDF:", e);
     }
+
 
     if (!sendImmediately) {
       if (customScheduleTime) {
@@ -186,11 +204,29 @@ export async function POST(
       }
     }
 
-    const emailService = await getEmailServiceForUser(session.userId);
+    // DECISION: Should we send now or queue for later?
+    // Resend (native cloud provider) handles its own scheduling.
+    // Gmail/Outlook (personal OAuth) needs our server to manage the "When".
+    const isOAuthProvider = user?.emailConnection?.provider === "gmail" || user?.emailConnection?.provider === "outlook";
 
-    // We should get the user's name for the 'from' field if possible
-    const user = await User.findById(session.userId);
-    const senderName = user ? user.name : "Candidate";
+    if (!sendImmediately && isOAuthProvider) {
+      // QUEUE ONLY - Don't call emailService.sendEmail yet
+      job.scheduledEmailDate = scheduledTime || calculateScheduleTime();
+      job.scheduleStatus = "pending";
+      // We might want to store the computed subject/html in the job if needed, 
+      // but for now the cron worker can re-calculate or we can add fields.
+      // Let's stick to updating the status.
+      await job.save();
+
+      return NextResponse.json({
+        success: true,
+        message: "Email queued for scheduled delivery",
+        scheduledTime: job.scheduledEmailDate,
+        data: job
+      });
+    }
+
+    const emailService = await getEmailServiceForUser(session.userId);
 
     const emailResponse = await emailService.sendEmail(
       job.companyEmail,
@@ -199,6 +235,8 @@ export async function POST(
       resendOptions.attachments,
       resendOptions.scheduled_at
     );
+
+
 
     if (!emailResponse.success || emailResponse.error) {
       return NextResponse.json({ success: false, error: emailResponse.error?.message || "Failed to send email" }, { status: 400 });

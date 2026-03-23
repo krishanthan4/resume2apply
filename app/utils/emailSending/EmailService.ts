@@ -6,11 +6,35 @@ import User from "@/app/models/User";
 
 // Example of a concrete Decorator that logs dispatch times
 export class LoggingEmailDecorator extends EmailDecorator {
-    public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
-        console.log(`[Email] Preparing to send to ${to} (Subject: ${subject}, Attachments: ${attachments?.length || 0})`);
-        const result = await super.sendEmail(to, subject, body, attachments, scheduledAt);
+    public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any> {
+        console.log(`[Email] Preparing to send to ${to} (Subject: ${subject}, Attachments: ${attachments?.length || 0}, BCC: ${bcc || 'none'})`);
+        const result = await super.sendEmail(to, subject, body, attachments, scheduledAt, bcc);
         console.log(`[Email] Dispatch status for ${to} = ${result?.success ? 'SUCCESS' : 'FAILED'}`);
         return result;
+    }
+}
+
+
+// BCC decorator to handle verification copies
+export class BCCEmailDecorator extends EmailDecorator {
+    private userId?: string;
+
+    constructor(service: IEmailService, userId?: string) {
+        super(service);
+        this.userId = userId;
+    }
+
+    public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any> {
+        let finalBcc = bcc;
+
+        if (this.userId && !finalBcc) {
+            const user = await User.findById(this.userId);
+            if (user?.bccSettings?.enabled) {
+                finalBcc = user.bccSettings.customEmail || user.email;
+            }
+        }
+
+        return await super.sendEmail(to, subject, body, attachments, scheduledAt, finalBcc);
     }
 }
 
@@ -24,10 +48,8 @@ export class RateLimitingEmailDecorator extends EmailDecorator {
         this.userId = userId;
     }
 
-    public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
+    public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any> {
         if (this.userId) {
-            // Count emails sent today by this user (this would need an EmailLog model or checking Job status)
-            // For now, let's assume we check the Job model for applied jobs today
             const Job = require("@/app/models/Job").default;
             const startOfDay = new Date();
             startOfDay.setHours(0, 0, 0, 0);
@@ -43,9 +65,10 @@ export class RateLimitingEmailDecorator extends EmailDecorator {
             }
         }
 
-        return await super.sendEmail(to, subject, body, attachments, scheduledAt);
+        return await super.sendEmail(to, subject, body, attachments, scheduledAt, bcc);
     }
 }
+
 
 // Single factory pattern to init the system correctly anywhere in the app
 export async function getEmailServiceForUser(userId?: string): Promise<IEmailService> {
@@ -68,8 +91,15 @@ export async function getEmailServiceForUser(userId?: string): Promise<IEmailSer
     // Wrap in logging decorator
     let service: IEmailService = new LoggingEmailDecorator(baseService);
 
-    // Wrap in rate limiting decorator
-    service = new RateLimitingEmailDecorator(service, userId);
+    // Apply User-specific patterns
+    if (userId) {
+        // Wrap in BCC decorator (verification copies)
+        service = new BCCEmailDecorator(service, userId);
+
+        // Wrap in rate limiting decorator (spam prevention)
+        service = new RateLimitingEmailDecorator(service, userId);
+    }
 
     return service;
 }
+

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Plus, Loader2, FileText, Search } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useJobBoardStore } from "@/app/store/useJobBoardStore";
@@ -18,7 +18,7 @@ const COLUMNS = [
   { id: "rejected", title: "Rejected", color: "#ef4444" },
 ];
 
-export default function JobApplyKanban() {
+function JobApplyKanbanContent() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -225,12 +225,12 @@ export default function JobApplyKanban() {
       
       {/* Desktop Add Button */}
       <div className="absolute top-0 right-0 hidden sm:block">
-         <Button
-            className="text-[13px] py-2 px-[14px]"
-            onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
-          >
-            <Plus size={14} /> New application
-          </Button>
+        <Button
+          className="text-[13px] py-2 px-[14px]"
+          onClick={() => { setInitialJobData(null); setIsModalOpen(true); }}
+        >
+          <Plus size={14} /> New application
+        </Button>
       </div>
 
       {isModalOpen && (
@@ -259,3 +259,16 @@ export default function JobApplyKanban() {
     </div>
   );
 }
+
+export default function JobApplyKanban() {
+  return (
+    <Suspense fallback={
+      <div className="flex-1 flex items-center justify-center text-zinc-400">
+        <Loader2 size={28} className="animate-spin" />
+      </div>
+    }>
+      <JobApplyKanbanContent />
+    </Suspense>
+  );
+}
+

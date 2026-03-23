@@ -15,6 +15,8 @@ export default function SettingsPage() {
     fetchUser();
   }, []);
 
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const fetchUser = async () => {
     try {
       const res = await fetch("/api/user/me");
@@ -26,6 +28,33 @@ export default function SettingsPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateBCC = async (updates: any) => {
+    setIsUpdating(true);
+    try {
+      const res = await fetch("/api/user/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bccSettings: {
+            ...user.bccSettings,
+            ...updates
+          }
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+        // Assuming toast is available or import it
+        const { toast } = await import("sonner");
+        toast.success("BCC settings updated");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -123,8 +152,60 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
+      
+      {/* Email Verification Card */}
+      <div className="mb-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Email Verification (BCC)</div>
+        </div>
+        <div className="p-6">
+          {loading ? (
+            <div className="flex flex-col gap-4 animate-pulse">
+              <div className="h-4 bg-zinc-100 rounded w-full"></div>
+              <div className="h-10 bg-zinc-100 rounded w-full"></div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[13px] font-bold text-zinc-900 mb-0.5">Blind Carbon Copy (BCC)</div>
+                  <div className="text-xs text-zinc-500">Receive a copy of every application email sent.</div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={user?.bccSettings?.enabled}
+                    onChange={(e) => handleUpdateBCC({ enabled: e.target.checked })}
+                    disabled={isUpdating}
+                  />
+                  <div className="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-900"></div>
+                </label>
+              </div>
+
+              <div className={`transition-all duration-200 ${user?.bccSettings?.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                <div className="text-[12px] font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Custom BCC Email (Optional)</div>
+                <div className="flex gap-2">
+                  <input 
+                    type="email"
+                    placeholder={user?.email || "Verification email..."}
+                    className="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3.5 py-2 text-[13px] text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-all"
+                    value={user?.bccSettings?.customEmail || ""}
+                    onChange={(e) => setUser({...user, bccSettings: {...user.bccSettings, customEmail: e.target.value}})}
+                    onBlur={(e) => handleUpdateBCC({ customEmail: e.target.value })}
+                  />
+                </div>
+                <p className="text-[10px] text-zinc-400 mt-2">
+                  Leave blank to use your primary account email: {user?.email}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Email Connection Card */}
+
 
       <div className="mb-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
         <div className="px-6 py-[18px] border-b border-zinc-100">

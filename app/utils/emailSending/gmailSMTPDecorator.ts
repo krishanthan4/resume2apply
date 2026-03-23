@@ -14,8 +14,10 @@ export class GmailOAuthService implements IEmailService {
         subject: string,
         body: string,
         attachments?: any[],
-        scheduledAt?: string
+        scheduledAt?: string,
+        bcc?: string
     ): Promise<any> {
+
         try {
             const user = await User.findById(this.userId);
             if (!user || user.emailConnection?.provider !== "gmail") {
@@ -33,24 +35,8 @@ export class GmailOAuthService implements IEmailService {
 
             const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
-            const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
-            const messageParts = [
-                `From: ${user.emailConnection.email}`,
-                `To: ${to}`,
-                `Content-Type: text/html; charset=utf-8`,
-                `MIME-Version: 1.0`,
-                `Subject: ${utf8Subject}`,
-                "",
-                body,
-            ];
+            const raw = await this.createRawEmail(user.emailConnection.email!, to, subject, body, attachments, bcc);
 
-            // To add attachments in a simple raw way for Gmail API we need more multipart MIME formatting
-            // Or we can use `nodemailer` just for formatting.
-            // Let's use `nodemailer` for raw email creation if available.
-            // But let's stick to core logic if possible.
-            // I'll add `nodemailer` as it's common for building MIME mail.
-
-            const raw = await this.createRawEmail(user.emailConnection.email!, to, subject, body, attachments);
 
             const res = await gmail.users.messages.send({
                 userId: "me",
@@ -66,41 +52,52 @@ export class GmailOAuthService implements IEmailService {
         }
     }
 
-    private async createRawEmail(from: string, to: string, subject: string, html: string, attachments?: any[]): Promise<string> {
-        const boundary = "__REPLACE_THIS_WITH_RANDOM_BOUNDARY__";
-        const header = [
+    private async createRawEmail(from: string, to: string, subject: string, html: string, attachments?: any[], bcc?: string): Promise<string> {
+        const boundary = `----=_Part_${Math.random().toString(36).substring(2)}`;
+
+        const headerLines = [
             `From: ${from}`,
             `To: ${to}`,
-            `Subject: ${subject}`,
-            `MIME-Version: 1.0`,
-            `Content-Type: multipart/mixed; boundary="${boundary}"`,
-            "",
-            `--${boundary}`,
-            `Content-Type: text/html; charset="UTF-8"`,
-            `Content-Transfer-Encoding: 7bit`,
-            "",
-            html,
-            "",
         ];
+
+        if (bcc) {
+            headerLines.push(`Bcc: ${bcc}`);
+        }
+
+        const encodedSubject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
+        headerLines.push(`Subject: ${encodedSubject}`);
+        headerLines.push(`MIME-Version: 1.0`);
+        headerLines.push(`Content-Type: multipart/mixed; boundary="${boundary}"`);
+        headerLines.push(""); // End of main headers
+
+        // Body Part
+        headerLines.push(`--${boundary}`);
+        headerLines.push(`Content-Type: text/html; charset="UTF-8"`);
+        headerLines.push(`Content-Transfer-Encoding: 7bit`);
+        headerLines.push("");
+        headerLines.push(html);
+        headerLines.push("");
 
         if (attachments) {
             for (const att of attachments) {
-                header.push(`--${boundary}`);
-                header.push(`Content-Type: application/pdf; name="${att.filename}"`);
-                header.push(`Content-Disposition: attachment; filename="${att.filename}"`);
-                header.push(`Content-Transfer-Encoding: base64`);
-                header.push("");
-                header.push(att.content); // assuming base64
-                header.push("");
+                headerLines.push(`--${boundary}`);
+                headerLines.push(`Content-Type: application/pdf; name="${att.filename}"`);
+                headerLines.push(`Content-Disposition: attachment; filename="${att.filename}"`);
+                headerLines.push(`Content-Transfer-Encoding: base64`);
+                headerLines.push("");
+                headerLines.push(att.content); // assuming base64
+                headerLines.push("");
             }
         }
 
-        header.push(`--${boundary}--`);
+        headerLines.push(`--${boundary}--`);
 
-        return Buffer.from(header.join("\n"))
+        return Buffer.from(headerLines.join("\r\n"))
             .toString("base64")
             .replace(/\+/g, "-")
             .replace(/\//g, "_")
             .replace(/=+$/, "");
     }
 }
+
+
