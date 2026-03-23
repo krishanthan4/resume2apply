@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import ControlSide from "@/app/components/resume-design/ControlsSide";
 import PDFView from "@/app/components/resume-design/PDFView";
+import ExecutiveSummaryModel from "@/app/components/resume-design/ExecutiveSummaryModel";
 
 export default function CustomResumeBuilderPage() {
   const router = useRouter();
@@ -16,6 +16,7 @@ export default function CustomResumeBuilderPage() {
   const [execTemplates, setExecTemplates] = useState<any[]>([]);
   const [showExecSummaryModal, setShowExecSummaryModal] = useState(false);
   const [tempExecSummary, setTempExecSummary] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [config, setConfig] = useState({
     fontSizeBase: 11.5,
@@ -105,7 +106,7 @@ export default function CustomResumeBuilderPage() {
       if (config.execTemplateId) {
         const t = execTemplates.find(x => x._id === config.execTemplateId);
         if (t) {
-          currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
+          currentExecTemplateText = config.type.includes("single") ? (t.shortSummary || t.content) : (t.detailedSummary || t.content);
         }
       }
 
@@ -154,10 +155,10 @@ export default function CustomResumeBuilderPage() {
     if (config.execTemplateId) {
       const t = execTemplates.find(x => x._id === config.execTemplateId);
       if (t) {
-        currentExecTemplateText = config.type.includes("single") ? (t.shortSummery || t.content) : (t.detailedSummery || t.content);
+        currentExecTemplateText = config.type.includes("single") ? (t.shortSummary || t.content) : (t.detailedSummary || t.content);
       }
     }
-    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.generalExecutiveSummary?.detailedSummery || resumeData?.generalExecutiveSummary?.content || "");
+    setTempExecSummary(currentExecTemplateText || config.selectedExecutiveSummaryText || resumeData?.generalExecutiveSummary?.detailedSummary || resumeData?.generalExecutiveSummary?.content || "");
     setShowExecSummaryModal(true);
   };
 
@@ -174,7 +175,7 @@ export default function CustomResumeBuilderPage() {
   };
 
   return (
-    <div style={{ display: "flex", gap: 24, height: "calc(100vh - 120px)", marginTop: -12 }}>
+    <div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-120px)] -mt-3 relative md:pb-0 pb-20 md:pt-0">
       {/* Left sidebar: Controls */}
     <ControlSide
     config={config}
@@ -190,42 +191,27 @@ export default function CustomResumeBuilderPage() {
     pdfUrl={pdfUrl}
     isGenerating={isGenerating}
     handleApplyToJobClick={handleApplyToJobClick}
+    isSidebarOpen={isSidebarOpen}
+    setIsSidebarOpen={setIsSidebarOpen}
     />
 
       {/* Right side: PDF Preview */}
-      <PDFView
-        config={config}
-        handleDownload={handleDownload}
-        pdfUrl={pdfUrl}
-        setConfig={setConfig}
-      />
+      <div className="flex-1 overflow-hidden">
+        <PDFView
+          config={config}
+          handleDownload={handleDownload}
+          pdfUrl={pdfUrl}
+          setConfig={setConfig}
+        />
+      </div>
 
       {showExecSummaryModal && (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(24, 24, 27, 0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 }}>
-          <div style={{ background: "#fff", borderRadius: 12, padding: 24, width: "100%", maxWidth: 500, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#18181b" }}>Verify Executive Summary</h3>
-              <button onClick={() => setShowExecSummaryModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#a1a1aa" }}><X size={18} /></button>
-            </div>
-            <p style={{ fontSize: 13, color: "#71717a" }}>
-              Before we send this application to the Kanban board, do you need to make any final adjustments to your executive summary?
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Executive Summary content</label>
-              <textarea
-                value={tempExecSummary}
-                onChange={(e) => setTempExecSummary(e.target.value)}
-                className="textarea-field"
-                style={{ minHeight: 140 }}
-                placeholder="Adjust summary..."
-              />
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 12 }}>
-              <button className="btn-secondary" onClick={() => setShowExecSummaryModal(false)}>Cancel</button>
-              <button className="btn-primary" onClick={confirmApplyToJob}>Confirm & Apply</button>
-            </div>
-          </div>
-        </div>
+       <ExecutiveSummaryModel
+         setShowExecSummaryModal={setShowExecSummaryModal}
+         tempExecSummary={tempExecSummary}
+         setTempExecSummary={setTempExecSummary}
+         confirmApplyToJob={confirmApplyToJob}
+       />
       )}
     </div>
   );

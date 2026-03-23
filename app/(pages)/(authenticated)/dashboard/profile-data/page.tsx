@@ -72,11 +72,11 @@ export default function ProfileDataPage() {
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+    <div className="max-w-[900px] mx-auto">
       {/* Header */}
     <TitleHeader handleSave={handleSave} saving={saving} />
 
-      <div style={{ display: "flex", gap: 24 }}>
+      <div className="flex md:flex-row flex-col gap-6">
        <LeftNavPanel activeTab={activeTab} setActiveTab={setActiveTab} TABS={TABS} activeIdx={activeIdx} />
 
        <RightContentPanel activeTab={activeTab} isLast={isLast} handleSave={handleSave} goNext={goNext} TABS={TABS} SECTION_CONTENT={SECTION_CONTENT} activeIdx={activeIdx} />

@@ -8,9 +8,9 @@ import { FadeUp } from "./FadeUp";
 
 const FAQ_DATA = [
   {
-    q: "What About my Data Privacy? I gave all of my details",
-    a: "What Privacy brother?. Your data ,your database.don't care about Security",
-    image: "/backgroundimage.png", // Example: User can replace this later
+    q: "Why is this platform open-source?",
+    a: "We believe in transparency and security. Since this platform handles job application emails, sending them requires your own email credentials. By being open-source, you can verify how your data is handled and even run your own instance to keep your credentials completely private while still benefiting from our powerful resume-building and email-sending features.",
+    image: "/backgroundimage.png",
   },
   {
     q: "Does it come with pre-built Resume Templates?",
@@ -19,15 +19,24 @@ const FAQ_DATA = [
   },
   {
     q: "How does the email sending work?",
-    a: "You just provide a free Resend.com API Key inside your server environment parameters, and Resume2Apply binds instantly — giving you full permission to auto-send Cover letters via SMTP.",
+    a: "You can send emails with your professional email, you can choose your google or outlook email to send emails from, in the future update we will add the feature to use your own domain email to send emails from",
   },
   {
-    q: "Where is my data stored?",
-    a: "In your chosen MongoDB instance. Because it is self-hosted, you hold complete sovereignty over your data and PDFs. No 3rd parties scanning your work history.",
+    q: "How does the cover letter work?",
+    a: "You can generate cover letters for each job application, you can customize the cover letter to your needs, in the future update we will add the feature to generate cover letters automatically",
   },
+  {
+    q: "Is the platform mobile-friendly?",
+    a: "Yes, the platform is fully responsive and works great on mobile devices. You can manage your applications and even edit your resume on the go.",
+  },
+  {
+    q: "Can I export my resume to PDF?",
+    a: "Yes, you can export your resume to a high-quality PDF format , ensuring that your application gets through automated screening systems.",
+  },
+
 ];
 
-const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }) => {
+const AccordionItem = ({ q, a }: { q: string; a: string}) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border border-slate-200 rounded-2xl mb-4 overflow-hidden bg-white shadow-sm hover:border-slate-300 transition-colors">
@@ -51,21 +60,6 @@ const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }
             <div className="px-6 pb-6 text-slate-600 leading-relaxed">
                 {a}
               </div>
-              
-              {image && (
-                <FadeUp>
-                  <div className="relative w-32 mx-auto aspect-square mb-4 mt-4">
-                    <div className="absolute inset-0 bg-white border-[12px] border-white ring-1 ring-black shadow-2xl rounded-sm rotate-3 hover:rotate-0 transition-transform duration-500 overflow-hidden">
-                      <Image 
-                        src={image} 
-                        alt="FAQ Visual" 
-                        fill 
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                </FadeUp>
-              )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -75,7 +69,7 @@ const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }
 
 export function FAQ() {
   return (
-    <section className="py-32 relative z-10 bg-white overflow-hidden">
+    <section id="faq" className="py-24 relative z-10 bg-white overflow-hidden">
       {/* --- Ambient Background --- */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-100/40 blur-[100px]" />
@@ -93,7 +87,7 @@ export function FAQ() {
         <div className="space-y-4">
           {FAQ_DATA.map((item, index) => (
             <FadeUp key={index} delay={index * 0.1}>
-              <AccordionItem q={item.q} a={item.a} image={item.image} />
+              <AccordionItem q={item.q} a={item.a} />
             </FadeUp>
           ))}
         </div>

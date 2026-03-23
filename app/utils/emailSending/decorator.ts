@@ -1,6 +1,6 @@
 // app/utils/emailSending/decorator.ts
 export interface IEmailService {
-  sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any>;
+  sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any>;
 }
 
 export class EmailDecorator implements IEmailService {
@@ -10,7 +10,8 @@ export class EmailDecorator implements IEmailService {
     this.wrappedService = service;
   }
 
-  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
-    return this.wrappedService.sendEmail(to, subject, body, attachments, scheduledAt);
+  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any> {
+    return this.wrappedService.sendEmail(to, subject, body, attachments, scheduledAt, bcc);
   }
 }
+

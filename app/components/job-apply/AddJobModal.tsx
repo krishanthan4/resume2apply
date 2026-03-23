@@ -79,58 +79,25 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.4)",
-        backdropFilter: "blur(4px)",
-        padding: 16,
-      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[4px] p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        style={{
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 16,
-          padding: "28px 28px 24px",
-          width: "100%",
-          maxWidth: 420,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-          position: "relative",
-        }}
+        className="bg-white border border-zinc-200 rounded-[16px] p-6 sm:p-7 w-full max-w-[420px] shadow-[0_20px_60px_rgba(0,0,0,0.12)] relative"
       >
         {/* Close */}
-        <Button
+        <button
           onClick={onClose}
-          style={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            width: 28,
-            height: 28,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#f4f4f5",
-            border: "1px solid #e4e4e7",
-            borderRadius: 7,
-            cursor: "pointer",
-            color: "#71717a",
-          }}
+          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-[7px] cursor-pointer text-zinc-500 hover:text-zinc-800 transition-colors"
         >
           <X size={14} />
-        </Button>
+        </button>
 
-        <h2 style={{ fontSize: 17, fontWeight: 700, color: "#18181b", letterSpacing: "-0.02em", marginBottom: 22 }}>
+        <h2 className="text-[17px] font-bold text-zinc-900 tracking-[-0.02em] mb-[22px]">
           New application
         </h2>
 
-        <form onSubmit={handleCreateJob} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <form onSubmit={handleCreateJob} className="flex flex-col gap-[14px]">
           <div>
             <Label>Position</Label>
             <Input
@@ -152,7 +119,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
             />
           </div>
           <div>
-            <Label>Company email <span style={{ color: "#a1a1aa", fontWeight: 400 }}>(optional)</span></Label>
+            <Label>Company email <span className="text-zinc-400 font-normal">(optional)</span></Label>
             <Input
               type="email"
               value={formData.companyEmail}
@@ -174,22 +141,7 @@ export default function AddJobModal({ onClose, onJobCreated, initialData }: AddJ
           <Button
             type="submit"
             disabled={isSubmitting}
-            style={{
-              marginTop: 6,
-              width: "100%",
-              padding: "11px 0",
-              background: isSubmitting ? "#d4d4d8" : "#18181b",
-              color: "#fff",
-              border: "none",
-              borderRadius: 9,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: isSubmitting ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
+            className={`mt-1.5 w-full py-[11px] ${isSubmitting ? "bg-zinc-300 pointer-events-none" : "bg-zinc-900 cursor-pointer"} text-white border-none rounded-[9px] text-[14px] font-semibold flex items-center justify-center gap-2`}
           >
             {isSubmitting && <Loader2 size={15} className="animate-spin" />}
             {isSubmitting ? "Saving…" : "Save application"}

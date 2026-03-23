@@ -4,23 +4,24 @@ import { Input } from "@/app/components/ui/Input";
 import { TextArea } from "@/app/components/ui/TextArea";
 import { Label } from "@/app/components/ui/Label";
 import { Button } from "@/app/components/ui";
+import { toast } from "sonner";
 
 
 export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreated?: () => void }) {
   const [title, setTitle] = useState("");
-  const [shortSummery, setShortSummery] = useState("");
-  const [detailedSummery, setDetailedSummery] = useState("");
+  const [shortSummary, setShortSummary] = useState("");
+  const [detailedSummary, setDetailedSummary] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || (!shortSummery && !detailedSummery)) return;
+    if (!title || (!shortSummary && !detailedSummary)) return;
 
     setIsSubmitting(true);
     setSuccess(false);
     try {
-      const payload = { type: "executiveSummaryTemplate", title, shortSummery, detailedSummery };
+      const payload = { type: "executiveSummaryTemplate", title, shortSummary, detailedSummary };
 
       const response = await fetch("/api/templates", {
         method: "POST",
@@ -30,15 +31,15 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
       if (response.ok) {
         setSuccess(true);
         setTitle("");
-        setShortSummery("");
-        setDetailedSummery("");
+        setShortSummary("");
+        setDetailedSummary("");
         if (onTemplateCreated) onTemplateCreated();
       } else {
-        alert("Failed to create template.");
+        toast.success("Failed to create template.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error occurred.");
+      toast.success("Error occurred.");
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setSuccess(false), 3000);
@@ -66,8 +67,8 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Short Summary (Used for Single CV)</Label>
           <TextArea 
-            value={shortSummery}
-            onChange={(e) => setShortSummery(e.target.value)}
+            value={shortSummary}
+            onChange={(e) => setShortSummary(e.target.value)}
             className="textarea-field"
             style={{ minHeight: 70 }}
             placeholder="Short summary..."
@@ -77,8 +78,8 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b" }}>Detailed Summary (Used for Detailed CV)</Label>
           <TextArea 
-            value={detailedSummery}
-            onChange={(e) => setDetailedSummery(e.target.value)}
+            value={detailedSummary}
+            onChange={(e) => setDetailedSummary(e.target.value)}
             className="textarea-field"
             style={{ minHeight: 90 }}
             placeholder="Detailed summary..."
@@ -87,7 +88,7 @@ export default function TemplateCreator({ onTemplateCreated }: { onTemplateCreat
 
         <Button 
           type="submit" 
-          disabled={isSubmitting || !title || (!shortSummery && !detailedSummery)}
+          disabled={isSubmitting || !title || (!shortSummary && !detailedSummary)}
           className="btn-primary"
           style={{ width: "100%", marginTop: 4 }}
         >

@@ -2,7 +2,7 @@ import { Page, Document} from '@react-pdf/renderer';
 import getVisitorStyles from '../styles/visitorResumeStyles';
 import getEditorStyles from "../styles/editorResumeStyles";
 import HeaderSection from './HeaderSection';
-import SummerySection from './SummerySection';
+import SummarySection from './SummarySection';
 import ProjectSection from './ProjectSection';
 import SkillSection from './SkillSection';
 import EducationSection from './EducationSection';
@@ -36,9 +36,9 @@ const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type:
   const projectBulletsEnabled = true;
   const projectsLimit = maxProjects;
   
-  let summaryText = config?.generalExecutiveSummary?.detailedSummery || config?.generalExecutiveSummary?.content;
-  if (isSingle && (config?.generalExecutiveSummary?.shortSummery || config?.generalExecutiveSummary?.content)) {
-    summaryText = config.generalExecutiveSummary.shortSummery || config.generalExecutiveSummary.content;
+  let summaryText = config?.generalExecutiveSummary?.detailedSummary || config?.generalExecutiveSummary?.content;
+  if (isSingle && (config?.generalExecutiveSummary?.shortSummary || config?.generalExecutiveSummary?.content)) {
+    summaryText = config.generalExecutiveSummary.shortSummary || config.generalExecutiveSummary.content;
   }
   
   // Allow overriding with template text if selected in custom builder
@@ -65,7 +65,7 @@ const ResumeDocument = ({ config, type, isEditor = false }: { config: any, type:
     switch (sectionName) {
       case "executiveSummary":
         if (config?.showExecutiveSummary !== false && config?.sections?.executiveSummaryEnabled !== false && summaryText) {
-          return <SummerySection key="summary" styles={styles} summaryText={summaryText} />;
+          return <SummarySection key="summary" styles={styles} summaryText={summaryText} />;
         }
         return null;
       case "experience":

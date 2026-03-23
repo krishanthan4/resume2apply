@@ -72,117 +72,74 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.4)",
-        backdropFilter: "blur(4px)",
-        padding: 16,
-      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-[4px]"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div
-        style={{
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 16,
-          width: "100%",
-          maxWidth: 900,
-          height: "80vh",
-          display: "flex",
-          overflow: "hidden",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-        }}
-      >
+      <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-[900px] h-[90vh] md:h-[80vh] flex flex-col md:flex-row overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
         {/* Left: Template list */}
-        <div
-          style={{
-            width: 240,
-            flexShrink: 0,
-            borderRight: "1px solid #e4e4e7",
-            display: "flex",
-            flexDirection: "column",
-            background: "#fafafa",
-          }}
-        >
-          <div style={{ padding: "14px 16px", borderBottom: "1px solid #e4e4e7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "#18181b" }}>Cover Letters</span>
+        <div className="w-full md:w-[240px] shrink-0 border-b md:border-b-0 md:border-r border-zinc-200 flex flex-col bg-zinc-50 max-h-[35vh] md:max-h-full">
+          <div className="p-3.5 px-4 border-b border-zinc-200 flex justify-between items-center shrink-0">
+            <span className="text-xs font-semibold text-zinc-900">Cover Letters</span>
             <button
               onClick={resetForm}
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", color: "#71717a" }}
+              className="flex items-center justify-center bg-transparent border-none cursor-pointer text-zinc-500 hover:text-zinc-800 transition-colors"
               title="New template"
             >
               <Plus size={16} />
             </button>
           </div>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: 8, display: "flex", flexDirection: "column", gap: 4 }}>
+          <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
             {isLoading && (
-              <div style={{ display: "flex", justifyContent: "center", padding: 16 }}>
-                <Loader2 size={16} className="animate-spin" style={{ color: "#a1a1aa" }} />
+              <div className="flex justify-center p-4">
+                <Loader2 size={16} className="animate-spin text-zinc-400" />
               </div>
             )}
             {templates.map((t) => (
               <div
                 key={t._id}
                 onClick={() => handleEdit(t)}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: 9,
-                  border: editingId === t._id ? "1px solid #d4d4d8" : "1px solid transparent",
-                  background: editingId === t._id ? "#fff" : "transparent",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  transition: "background 0.15s",
-                }}
-                onMouseEnter={(e) => {
-                  if (editingId !== t._id) (e.currentTarget as HTMLElement).style.background = "#f0f0f0";
-                }}
-                onMouseLeave={(e) => {
-                  if (editingId !== t._id) (e.currentTarget as HTMLElement).style.background = "transparent";
-                }}
+                className={`p-2.5 px-3 rounded-[9px] border cursor-pointer flex justify-between items-start transition-colors ${
+                  editingId === t._id 
+                    ? "border-zinc-300 bg-white" 
+                    : "border-transparent bg-transparent hover:bg-zinc-200/50"
+                }`}
               >
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#18181b", marginBottom: 2 }}>{t.name}</div>
-                  <div style={{ fontSize: 11, color: "#a1a1aa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 150 }}>{t.subject}</div>
+                <div className="min-w-0 pr-2">
+                  <div className="text-[13px] font-semibold text-zinc-900 mb-0.5 truncate">{t.name}</div>
+                  <div className="text-[11px] text-zinc-400 overflow-hidden text-ellipsis whitespace-nowrap">{t.subject}</div>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); handleDelete(t._id); }}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "#d4d4d8", flexShrink: 0, marginLeft: 6, padding: 2 }}
+                  className="bg-transparent border-none cursor-pointer text-zinc-300 hover:text-red-500 shrink-0 p-0.5 transition-colors"
                 >
                   <Trash2 size={13} />
                 </button>
               </div>
             ))}
             {!isLoading && templates.length === 0 && (
-              <p style={{ fontSize: 12, color: "#a1a1aa", textAlign: "center", padding: "20px 8px", fontStyle: "italic" }}>No templates yet.</p>
+              <p className="text-xs text-zinc-400 text-center py-5 px-2 italic">No templates yet.</p>
             )}
           </div>
         </div>
 
         {/* Right: Editor */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ padding: "14px 20px", borderBottom: "1px solid #e4e4e7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="p-3.5 px-5 border-b border-zinc-200 flex justify-between items-center shrink-0">
+            <span className="text-[14px] font-semibold text-zinc-900">
               {editingId ? "Edit template" : "New template"}
             </span>
             <button
               onClick={onClose}
-              style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", background: "#f4f4f5", border: "1px solid #e4e4e7", borderRadius: 7, cursor: "pointer", color: "#71717a" }}
+              className="w-7 h-7 flex items-center justify-center bg-zinc-100 border border-zinc-200 rounded-[7px] cursor-pointer text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 transition-colors"
             >
               <X size={14} />
             </button>
           </div>
 
-          <form onSubmit={handleSave} style={{ flex: 1, overflowY: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 16 }}>
+          <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-4 md:p-5 flex flex-col gap-4">
             <div>
-              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Template name</Label>
+              <Label className="text-xs font-medium text-zinc-600 mb-1.5 block">Template name</Label>
               <Input
                 required
                 value={name}
@@ -195,7 +152,7 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
             </div>
 
             <div>
-              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email subject</Label>
+              <Label className="text-xs font-medium text-zinc-600 mb-1.5 block">Email subject</Label>
               <Input
                 required
                 value={subject}
@@ -205,13 +162,13 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
               />
-              <p style={{ fontSize: 11, color: "#a1a1aa", marginTop: 5 }}>
+              <p className="text-[11px] text-zinc-400 mt-1.5">
                 Placeholders: {`{{company}}, {{position}}`}
               </p>
             </div>
 
-            <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <Label style={{ fontSize: 12, fontWeight: 500, color: "#52525b", marginBottom: 5, display: "block" }}>Email body</Label>
+            <div className="flex-1 flex flex-col min-h-[200px]">
+              <Label className="text-xs font-medium text-zinc-600 mb-1.5 block">Email body</Label>
               <TextArea
                 required
                 value={body}
@@ -222,30 +179,22 @@ export default function CoverLetterTemplatesModal({ onClose }: { onClose: () => 
                   flex: 1,
                   resize: "none",
                   lineHeight: 1.65,
-                  minHeight: 200,
                 }}
+                className="min-h-[150px] md:min-h-[200px]"
                 onFocus={(e) => (e.currentTarget.style.borderColor = "#d4d4d8")}
                 onBlur={(e) => (e.currentTarget.style.borderColor = "#e4e4e7")}
               />
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: 8, borderTop: "1px solid #e4e4e7" }}>
+            <div className="flex justify-end pt-3 md:pt-2 mt-1 md:mt-0 border-t border-zinc-200">
               <Button
                 type="submit"
                 disabled={!name || !subject || !body}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "9px 20px",
-                  background: !name || !subject || !body ? "#d4d4d8" : "#18181b",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: !name || !subject || !body ? "not-allowed" : "pointer",
-                }}
+                className={`flex items-center gap-1.5 py-2 px-5 rounded-lg text-[13px] font-semibold transition-colors ${
+                  !name || !subject || !body 
+                    ? "bg-zinc-300 text-white pointer-events-none" 
+                    : "bg-zinc-900 text-white hover:bg-zinc-800"
+                }`}
               >
                 <Save size={14} />
                 {editingId ? "Update" : "Save template"}

@@ -3,29 +3,46 @@ import Field from "./Field";
 import { Input } from "@/app/components/ui/Input";
 import { TextArea } from "@/app/components/ui/TextArea";
 import { Label } from "@/app/components/ui/Label";
-import { Button } from "@/app/components/ui";
+import { Button, ConfirmationModal } from "@/app/components/ui";
+import { useState } from "react";
 
 
 function ExperienceSection({ data, onChange }: { data: any, onChange: (d: any) => void }) {
   const items = data.experiences || [];
   const add = () => onChange({ ...data, experiences: [...items, { achievements: [""] }] });
-  const remove = (idx: number) => { const n = [...items]; n.splice(idx, 1); onChange({ ...data, experiences: n }); };
+  const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const remove = (idx: number) => { setDeleteIdx(idx); setDeleteModalOpen(true); };
+  const confirmDelete = () => {
+    if (deleteIdx === null) return;
+    const n = [...items]; n.splice(deleteIdx, 1); onChange({ ...data, experiences: n });
+    setDeleteModalOpen(false); setDeleteIdx(null);
+  };
   const update = (idx: number, key: string, val: any) => { const n = [...items]; n[idx][key] = val; onChange({ ...data, experiences: n }); };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>Work Experience</h3>
-        <Button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
+        <Button variant='secondary' style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
           <Plus size={13} /> Add
         </Button>
       </div>
       {items.map((item: any, i: number) => (
         <div key={i} style={{ background: "#fafafa", border: "1px solid #e4e4e7", borderRadius: 12, padding: "16px", position: "relative" }}>
           {items.length > 1 && (
-            <Button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
+           <> <Button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
               <Trash2 size={14} />
             </Button>
+                <ConfirmationModal
+                  isOpen={deleteModalOpen}
+                  onClose={() => setDeleteModalOpen(false)}
+                  onConfirm={confirmDelete}
+                  title="Delete Experience"
+                  message="Are you sure you want to delete this experience? This action cannot be undone."
+                  confirmText="Delete"
+                  isDestructive={true}
+                /></>
           )}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
             <Field label="Company"><Input placeholder="Acme Corp" value={item.company || ""} onChange={(e) => update(i, "company", e.target.value)} /></Field>
@@ -43,7 +60,7 @@ function ExperienceSection({ data, onChange }: { data: any, onChange: (d: any) =
           </div>
           <div style={{ marginTop: 14 }}>
             <Field label="Achievements (Bullet Points)">
-              <TextArea placeholder={"- Developed key features...\n- Improved performance by 20%..."} value={(item.achievements || []).join("\n")} onChange={(e) => update(i, "achievements", e.target.value.split("\n"))} />
+              <TextArea rows={10} placeholder={"- Developed key features...\n- Improved performance by 20%..."} value={(item.achievements || []).join("\n")} onChange={(e) => update(i, "achievements", e.target.value.split("\n"))} />
             </Field>
           </div>
         </div>

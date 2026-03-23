@@ -1,6 +1,6 @@
 import { Text, View } from "@react-pdf/renderer";
 
-function SummerySection({ styles, summaryText }: { styles: any; summaryText: string }) {
+function SummarySection({ styles, summaryText }: { styles: any; summaryText: string }) {
   return (
   <View>
             <View style={styles.sectionTitleBox}><Text style={styles.sectionTitle}>Executive Summary</Text></View>
@@ -8,4 +8,4 @@ function SummerySection({ styles, summaryText }: { styles: any; summaryText: str
           </View>  )
 }
 
-export default SummerySection
+export default SummarySection

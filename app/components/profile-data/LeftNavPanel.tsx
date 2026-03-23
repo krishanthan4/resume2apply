@@ -6,8 +6,8 @@ function LeftNavPanel({activeTab, setActiveTab, TABS, activeIdx}:{
     activeIdx: number;
 }) {
     return (
-       <aside style={{ width: 180, flexShrink: 0 }}>
-          <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+       <aside className="md:w-[180px] w-full border rounded-2xl border-zinc-300 md:border-0 shadow md:shadow-none shrink-0">
+          <nav className="flex flex-col gap-0.5">
             {TABS.map((tab, i) => {
               const isActive = tab.id === activeTab;
               const isDone = i < activeIdx;
@@ -15,27 +15,26 @@ function LeftNavPanel({activeTab, setActiveTab, TABS, activeIdx}:{
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 8,
-                    background: isActive ? "#f4f4f5" : "transparent", border: "none", cursor: "pointer",
-                    textAlign: "left", width: "100%", transition: "background 0.15s",
-                  }}
+                  className={`w-full flex items-center gap-2.5 px-3 py-[9px] rounded-lg text-left transition-colors duration-150 cursor-pointer ${
+                    isActive ? "bg-zinc-100" : "bg-transparent hover:bg-zinc-50"
+                  }`}
                 >
                   <div
-                    style={{
-                      width: 20, height: 20, borderRadius: "50%",
-                      background: isDone ? "#18181b" : isActive ? "#18181b" : "#fff",
-                      border: isDone || isActive ? "none" : "1.5px solid #d4d4d8",
-                      display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#fff",
-                    }}
+                    className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border-[1.5px] ${
+                      isDone || isActive
+                        ? "bg-zinc-900 border-transparent text-white"
+                        : "bg-white border-zinc-300 text-white"
+                    }`}
                   >
                     {isDone ? (
-                      <span style={{ fontSize: 9, fontWeight: 700 }}>✓</span>
+                      <span className="text-[9px] font-bold">✓</span>
                     ) : (
-                      <span style={{ fontSize: 9, fontWeight: 700, color: isActive ? "#fff" : "#a1a1aa" }}>{i + 1}</span>
+                      <span className={`text-[9px] font-bold ${isActive ? "text-white" : "text-zinc-400"}`}>
+                        {i + 1}
+                      </span>
                     )}
                   </div>
-                  <span style={{ fontSize: 13, fontWeight: isActive ? 600 : 400, color: isActive ? "#18181b" : "#71717a" }}>
+                  <span className={`text-[13px] ${isActive ? "font-semibold text-zinc-900" : "font-normal text-zinc-500"}`}>
                     {tab.label}
                   </span>
                 </button>

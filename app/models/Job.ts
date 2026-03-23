@@ -9,6 +9,7 @@ const ContactSchema = new mongoose.Schema({
 
 const JobSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     companyName: { type: String, required: true },
     companyEmail: { type: String },
     appliedJobPosition: { type: String, required: true },
@@ -28,7 +29,9 @@ const JobSchema = new mongoose.Schema(
     },
     coverLetterId: { type: mongoose.Schema.Types.ObjectId, ref: "CoverLetterTemplate" },
     execSummaryId: { type: String },
+    resumeFileName: { type: String },
     scheduledEmailDate: { type: Date }, // For tracking scheduled times
+
     scheduleStatus: { type: String, enum: ["pending", "sent", "cancelled"] },
     resendEmailId: { type: String }, // Stores the Resend API ID for cancellation
   },

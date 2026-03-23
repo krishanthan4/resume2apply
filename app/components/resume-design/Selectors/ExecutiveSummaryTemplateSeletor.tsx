@@ -2,7 +2,7 @@ import React from "react";
 import { Label } from "@/app/components/ui/Label";
 import { Select } from "@/app/components/ui/Select";
 
-export default function ExecutiveSummeryTemplateSeletor({
+export default function ExecutiveSummaryTemplateSeletor({
   config,
   setConfig,
   execTemplates,

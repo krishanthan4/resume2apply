@@ -65,19 +65,12 @@ export default function DashboardLayout({
   const activeIdx = getStepIndex(pathname);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#fafafa",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="h-screen bg-zinc-50 flex flex-col overflow-y-hidden">
       {/* ── Top Navbar ────────────────────────────────── */}
  <DashboardTopNavbar pathname={pathname} STEPS={STEPS} activeIdx={activeIdx} />
 
       {/* ── Page Content ──────────────────────────────── */}
-      <main style={{ flex: 1, overflowY: "auto" }}>
+      <main className="flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={pathname}
@@ -85,7 +78,7 @@ export default function DashboardLayout({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            style={{ minHeight: "100%", maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}
+            className="min-h-full max-w-[1200px] mx-auto py-8 px-6"
           >
             {children}
           </motion.div>

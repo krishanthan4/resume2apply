@@ -2,13 +2,21 @@ import { Plus, Trash2 } from "lucide-react";
 import Field from "./Field";
 import { TextArea } from "@/app/components/ui/TextArea";
 import { Input } from "@/app/components/ui/Input";
-import { Button } from "@/app/components/ui";
+import { Button, ConfirmationModal } from "@/app/components/ui";
+import { useState } from "react";
 
 
 function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => void }) {
   const items = data.skillsData || [];
   const add = () => onChange({ ...data, skillsData: [...items, { category: "", skills: [] }] });
-  const remove = (idx: number) => { const n = [...items]; n.splice(idx, 1); onChange({ ...data, skillsData: n }); };
+  const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const remove = (idx: number) => { setDeleteIdx(idx); setDeleteModalOpen(true); };
+  const confirmDelete = () => {
+    if (deleteIdx === null) return;
+    const n = [...items]; n.splice(deleteIdx, 1); onChange({ ...data, skillsData: n });
+    setDeleteModalOpen(false); setDeleteIdx(null);
+  };
   const update = (idx: number, key: string, val: any) => { const n = [...items]; n[idx][key] = val; onChange({ ...data, skillsData: n }); };
 
   const updateCustom = (key: string, val: string) => onChange({ ...data, [key]: val });
@@ -17,7 +25,7 @@ function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => vo
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>Skills</h3>
-        <Button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
+        <Button variant='secondary' style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
           <Plus size={13} /> Add Category
         </Button>
       </div>
@@ -26,6 +34,15 @@ function SkillsSection({ data, onChange }: { data: any, onChange: (d: any) => vo
           <Button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
             <Trash2 size={14} />
           </Button>
+                <ConfirmationModal
+                  isOpen={deleteModalOpen}
+                  onClose={() => setDeleteModalOpen(false)}
+                  onConfirm={confirmDelete}
+                  title="Delete Skill Category"
+                  message="Are you sure you want to delete this skill category? This action cannot be undone."
+                  confirmText="Delete"
+                  isDestructive={true}
+                />
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <Field label="Category Name (optional)"><Input placeholder="e.g. Frontend Development" value={item.category || ""} onChange={(e) => update(i, "category", e.target.value)} /></Field>
             <Field label="Skills (comma separated)">

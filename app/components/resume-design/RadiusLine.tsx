@@ -14,7 +14,7 @@ interface RadiusLineProps {
 
 function RadiusLine({ label, value, min, max, step, unit = "px", onChange }: RadiusLineProps) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
+    <div style={{ display: "flex", flexDirection: "column",marginBottom: 5 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Label style={{ fontSize: 13, fontWeight: 500, color: "#52525b" }}>{label}</Label>
         <span style={{ fontSize: 12, color: "#71717a", fontFamily: "monospace" }}>{value}{unit}</span>

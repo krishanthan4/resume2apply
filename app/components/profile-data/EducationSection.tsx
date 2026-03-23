@@ -2,20 +2,28 @@ import Field from "./Field";
 import { Input } from "@/app/components/ui/Input";
 
 import { Plus, Trash2 } from "lucide-react";
-import { Button } from "@/app/components/ui";
+import { Button, ConfirmationModal } from "@/app/components/ui";
+import { useState } from "react";
 
 
 function EducationSection({ data, onChange }: { data: any, onChange: (d: any) => void }) {
   const items = data.educations || [];
   const add = () => onChange({ ...data, educations: [...items, {}] });
-  const remove = (idx: number) => { const n = [...items]; n.splice(idx, 1); onChange({ ...data, educations: n }); };
+  const [deleteIdx, setDeleteIdx] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const remove = (idx: number) => { setDeleteIdx(idx); setDeleteModalOpen(true); };
+  const confirmDelete = () => {
+    if (deleteIdx === null) return;
+    const n = [...items]; n.splice(deleteIdx, 1); onChange({ ...data, educations: n });
+    setDeleteModalOpen(false); setDeleteIdx(null);
+  };
   const update = (idx: number, key: string, val: any) => { const n = [...items]; n[idx][key] = val; onChange({ ...data, educations: n }); };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: "#18181b" }}>Education</h3>
-        <Button className="btn-secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
+        <Button variant='secondary' style={{ padding: "6px 12px", fontSize: 12 }} onClick={add}>
           <Plus size={13} /> Add
         </Button>
       </div>
@@ -24,6 +32,15 @@ function EducationSection({ data, onChange }: { data: any, onChange: (d: any) =>
           <Button onClick={() => remove(i)} style={{ position: "absolute", top: 12, right: 12, background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", display: "flex", padding: 4 }}>
             <Trash2 size={14} />
           </Button>
+                <ConfirmationModal
+                  isOpen={deleteModalOpen}
+                  onClose={() => setDeleteModalOpen(false)}
+                  onConfirm={confirmDelete}
+                  title="Delete Education"
+                  message="Are you sure you want to delete this education? This action cannot be undone."
+                  confirmText="Delete"
+                  isDestructive={true}
+                />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14 }}>
             <Field label="Degree Name"><Input placeholder="BSc in Computer Science" value={item.degree || ""} onChange={(e) => update(i, "degree", e.target.value)} /></Field>
             <Field label="Institution"><Input placeholder="University of Technology" value={item.institution || ""} onChange={(e) => update(i, "institution", e.target.value)} /></Field>

@@ -3,14 +3,23 @@ import * as cheerio from "cheerio";
 
 export async function POST(request: Request) {
   try {
-    const { companyName } = await request.json();
+    const { companyName, linkedinPageUrl } = await request.json();
     
     if (!companyName) {
       return NextResponse.json({ success: false, error: "Company name is required" }, { status: 400 });
     }
 
-    // Scrape DuckDuckGo for LinkedIn profiles working at the company
-    const query = encodeURIComponent(`site:linkedin.com/in "working at ${companyName}"`);
+    let companyQueryTerm = `"${companyName}"`;
+    if (linkedinPageUrl) {
+      // try to extract company handle if it's a URL
+      const match = linkedinPageUrl.match(/linkedin\.com\/company\/([^\/]+)/);
+      if (match && match[1]) {
+        companyQueryTerm = `"${match[1]}" OR "${companyName}"`;
+      }
+    }
+
+    // Scrape DuckDuckGo for LinkedIn profiles working at the company with specific roles
+    const query = encodeURIComponent(`site:linkedin.com/in (${companyQueryTerm}) ("HR" OR "Human Resources" OR "Recruiter" OR "Talent" OR "Software Engineer" OR "Developer" OR "CTO")`);
     const searchUrl = `https://html.duckduckgo.com/html/?q=${query}`;
     
     const response = await fetch(searchUrl, {

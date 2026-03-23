@@ -1,88 +1,332 @@
 "use client";
 
-import React from "react";
-import { Sun } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Sun, LogOut, Loader2, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/user/me");
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateBCC = async (updates: any) => {
+    setIsUpdating(true);
+    try {
+      const res = await fetch("/api/user/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bccSettings: {
+            ...user.bccSettings,
+            ...updates
+          }
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.user);
+        // Assuming toast is available or import it
+        const { toast } = await import("sonner");
+        toast.success("BCC settings updated");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/auth/login");
+      router.refresh();
+    } catch (e) {
+      console.error(e);
+      setIsLoggingOut(false);
+    }
+  };
+
+  const connectGoogle = async () => {
+    try {
+      const res = await fetch("/api/auth/google/url");
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const connectOutlook = async () => {
+    try {
+      const res = await fetch("/api/auth/outlook/url");
+      const { url } = await res.json();
+      window.location.href = url;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    if (!confirm("Are you sure you want to disconnect your email account? This will stop all scheduled email sending.")) return;
+
+    setIsDisconnecting(true);
+    try {
+      const res = await fetch("/api/user/email-connection", { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        await fetchUser(); // Refresh user data to update UI
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsDisconnecting(false);
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 640, margin: "0 auto" }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 6 }}>
+    <div className="max-w-[640px] mx-auto pb-10">
+      <div className="mb-7">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-1.5">
           Settings
         </h1>
-        <p style={{ fontSize: 14, color: "#71717a" }}>
+        <p className="text-sm text-zinc-500">
           Platform configuration for your Resume2Apply workspace.
         </p>
       </div>
 
-      {/* Card */}
-      <div
-        style={{
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        }}
-      >
-        <div style={{ padding: "18px 24px", borderBottom: "1px solid #f4f4f5" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#18181b" }}>Appearance</div>
+      {/* Profile Card */}
+      <div className="mb-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Profile Information</div>
+        </div>
+        <div className="p-6">
+          {loading ? (
+            <div className="flex flex-col gap-4 animate-pulse">
+              <div className="h-4 bg-zinc-100 rounded w-3/4"></div>
+              <div className="h-4 bg-zinc-100 rounded w-1/2"></div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-2">
+                <div className="text-[13px] text-zinc-500 font-medium">Full Name</div>
+                <div className="text-[13px] text-zinc-900 font-bold">{user?.name}</div>
+              </div>
+              <div className="grid grid-cols-2">
+                <div className="text-[13px] text-zinc-500 font-medium">Email Address</div>
+                <div className="text-[13px] text-zinc-900 font-bold">{user?.email}</div>
+              </div>
+              <div className="grid grid-cols-2 border-t border-zinc-50 pt-4">
+                <div className="text-[13px] text-zinc-500 font-medium">Account Type</div>
+                <div className="flex items-center gap-1.5">
+                  <div className={`w-1.5 h-1.5 rounded-full ${user?.authType === 'email' ? 'bg-zinc-400' : 'bg-blue-400'}`}></div>
+                  <div className="text-[13px] text-zinc-900 font-bold capitalize">
+                    {user?.authType === 'email' ? 'Email & Password' : `${user?.authType} OAuth`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Email Verification Card */}
+      <div className="mb-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Email Verification (BCC)</div>
+        </div>
+        <div className="p-6">
+          {loading ? (
+            <div className="flex flex-col gap-4 animate-pulse">
+              <div className="h-4 bg-zinc-100 rounded w-full"></div>
+              <div className="h-10 bg-zinc-100 rounded w-full"></div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[13px] font-bold text-zinc-900 mb-0.5">Blind Carbon Copy (BCC)</div>
+                  <div className="text-xs text-zinc-500">Receive a copy of every application email sent.</div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={user?.bccSettings?.enabled}
+                    onChange={(e) => handleUpdateBCC({ enabled: e.target.checked })}
+                    disabled={isUpdating}
+                  />
+                  <div className="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-zinc-900"></div>
+                </label>
+              </div>
+
+              <div className={`transition-all duration-200 ${user?.bccSettings?.enabled ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                <div className="text-[12px] font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Custom BCC Email (Optional)</div>
+                <div className="flex gap-2">
+                  <input 
+                    type="email"
+                    placeholder={user?.email || "Verification email..."}
+                    className="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3.5 py-2 text-[13px] text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900 transition-all"
+                    value={user?.bccSettings?.customEmail || ""}
+                    onChange={(e) => setUser({...user, bccSettings: {...user.bccSettings, customEmail: e.target.value}})}
+                    onBlur={(e) => handleUpdateBCC({ customEmail: e.target.value })}
+                  />
+                </div>
+                <p className="text-[10px] text-zinc-400 mt-2">
+                  Leave blank to use your primary account email: {user?.email}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Email Connection Card */}
+
+
+      <div className="mb-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Email Connection</div>
+        </div>
+        <div className="p-6">
+          {loading ? (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="animate-spin text-zinc-400" size={20} />
+            </div>
+          ) : user?.emailConnection?.provider && user.emailConnection.provider !== 'none' ? (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-emerald-100 bg-emerald-50/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                    <CheckCircle2 size={18} />
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold text-zinc-900 capitalize">
+                      {user.emailConnection.provider} Connected
+                    </div>
+                    <div className="text-xs text-zinc-500">{user.emailConnection.email}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={user.emailConnection.provider === 'gmail' ? connectGoogle : connectOutlook}
+                    className="text-xs font-medium text-zinc-500 hover:text-zinc-900 underline underline-offset-4"
+                  >
+                    Change Account
+                  </button>
+                  <span className="text-zinc-300">|</span>
+                  <button
+                    onClick={handleDisconnect}
+                    disabled={isDisconnecting}
+                    className="text-xs font-medium text-red-500 hover:text-red-700 underline underline-offset-4 disabled:opacity-50"
+                  >
+                    {isDisconnecting ? "Removing..." : "Disconnect"}
+                  </button>
+                </div>
+              </div>
+              <p className="text-xs text-zinc-500 px-1">
+                Emails for job applications will be sent directly from your {user.emailConnection.provider} account.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-zinc-500">
+                Connect your personal email to send job applications directly from your own domain. This increases conversion rates and provides a better experience for recruiters.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={connectGoogle}
+                  className="flex cursor-pointer items-center justify-center gap-2.5 py-2.5 border border-zinc-200 rounded-xl text-[13px] font-medium text-zinc-700 bg-white hover:bg-zinc-50 transition-colors shadow-sm"
+                >
+ <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.64 9.20455C17.64 8.56636 17.5827 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z" fill="#4285F4"/>
+                    <path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957273V13.0418C2.43818 15.9832 5.48182 18 9 18Z" fill="#34A853"/>
+                    <path d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29V4.95818H0.957273C0.347727 6.17318 0 7.54773 0 9C0 10.4523 0.347727 11.8268 0.957273 13.0418L3.96409 10.71Z" fill="#FBBC05"/>
+                    <path d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957273 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z" fill="#EA4335"/>
+                  </svg>                  Connect Gmail
+                </button>
+                <button
+                  onClick={connectOutlook}
+                  className="flex cursor-pointer items-center justify-center gap-2.5 py-2.5 border border-zinc-200 rounded-xl text-[13px] font-medium text-zinc-700 bg-white hover:bg-zinc-50 transition-colors shadow-sm"
+                >
+ <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#f35325" d="M1 1h7.5v7.5H1z"/>
+                    <path fill="#81bc06" d="M9.5 1H17v7.5H9.5z"/>
+                    <path fill="#05a6f0" d="M1 9.5h7.5V17H1z"/>
+                    <path fill="#ffba08" d="M9.5 9.5H17V17H9.5z"/>
+                  </svg>
+                  Connect Outlook
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Theme Card */}
+      <div className="hidden bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Appearance</div>
         </div>
 
-        <div style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="p-6 flex justify-between items-center">
           <div>
-            <div style={{ fontSize: 14, fontWeight: 500, color: "#18181b", marginBottom: 3 }}>Theme</div>
-            <div style={{ fontSize: 12, color: "#71717a" }}>
+            <div className="text-sm font-medium text-zinc-900 mb-[3px]">Theme</div>
+            <div className="text-xs text-zinc-500">
               This platform uses a clean white theme. Dark mode coming soon.
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 14px",
-              background: "#f4f4f5",
-              border: "1px solid #e4e4e7",
-              borderRadius: 99,
-              fontSize: 13,
-              fontWeight: 500,
-              color: "#52525b",
-            }}
-          >
+          <div className="flex items-center gap-2 py-2 px-[14px] bg-zinc-100 border border-zinc-200 rounded-full text-[13px] font-medium text-zinc-600">
             <Sun size={14} /> Light
           </div>
         </div>
       </div>
 
-      {/* About card */}
-      <div
-        style={{
-          marginTop: 14,
-          background: "#fff",
-          border: "1px solid #e4e4e7",
-          borderRadius: 14,
-          overflow: "hidden",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        }}
-      >
-        <div style={{ padding: "18px 24px", borderBottom: "1px solid #f4f4f5" }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#18181b" }}>About</div>
+      {/* Account card */}
+      <div className="mt-3.5 bg-white border border-zinc-200 rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+        <div className="px-6 py-[18px] border-b border-zinc-100">
+          <div className="text-[13px] font-semibold text-zinc-900">Account</div>
         </div>
-        <div style={{ padding: "20px 24px" }}>
-          <dl style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {[
-              ["Platform", "Resume2Apply"],
-              ["Version", "0.1.0"],
-              ["Mode", "Self-hosted"],
-              ["Database", "MongoDB (Mongoose)"],
-            ].map(([label, value]) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
-                <dt style={{ fontSize: 13, color: "#71717a" }}>{label}</dt>
-                <dd style={{ fontSize: 13, fontWeight: 500, color: "#18181b" }}>{value}</dd>
+        <div className="p-6">
+          <div className="flex justify-between items-center">
+            <div >
+              <div className="text-sm font-medium text-zinc-900 mb-[3px]">Sign Out</div>
+              <div className="text-xs sm:block hidden text-zinc-500">
+                Log out of your current session on this device.
               </div>
-            ))}
-          </dl>
+            </div>
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="flex items-center gap-2 py-2 px-[14px] bg-red-50 hover:bg-red-100 border border-red-200 rounded-full text-[13px] font-medium text-red-600 transition-colors disabled:opacity-50"
+            >
+              {isLoggingOut ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
     </div>

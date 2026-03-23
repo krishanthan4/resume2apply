@@ -1,13 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Plus, Building2, Globe, Trash2, UserPlus, ExternalLink } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { TargetCompaniesHeader } from "@/app/components/target-companies/TargetCompaniesHeader";
+import { TargetCompaniesList } from "@/app/components/target-companies/TargetCompaniesList";
+import { ConfirmationModal } from "@/app/components/ui/ConfirmationModal";
 
 export default function TargetCompaniesPage() {
   const [companies, setCompanies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newCompanyName, setNewCompanyName] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
 
   useEffect(() => { fetchCompanies(); }, []);
 
@@ -15,9 +21,16 @@ export default function TargetCompaniesPage() {
     try {
       const res = await fetch("/api/target-companies");
       const json = await res.json();
-      if (json.success) setCompanies(json.data);
-    } catch (e) { console.error(e); }
-    finally { setIsLoading(false); }
+      if (json.success) {
+        // Sort strictly by their order index, or fallback correctly
+        const sorted = json.data.sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999));
+        setCompanies(sorted);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const addCompany = async (e: React.FormEvent) => {
@@ -28,20 +41,35 @@ export default function TargetCompaniesPage() {
       const res = await fetch("/api/target-companies", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newCompanyName.trim() }),
+        body: JSON.stringify({ name: newCompanyName.trim(), order: companies.length }),
       });
       const json = await res.json();
-      if (json.success) { setCompanies([json.data, ...companies]); setNewCompanyName(""); }
+      if (json.success) {
+        setCompanies([...companies, json.data]); // insert at bottom visually
+        setNewCompanyName("");
+      }
     } catch (e) { console.error(e); }
     finally { setIsAdding(false); }
   };
 
-  const deleteCompany = async (id: string) => {
-    if (!confirm("Are you sure?")) return;
+  const initiateDelete = (id: string) => {
+    setCompanyToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!companyToDelete) return;
     try {
-      await fetch(`/api/target-companies/${id}`, { method: "DELETE" });
-      setCompanies(companies.filter((c) => c._id !== id));
-    } catch (e) { console.error(e); }
+      await fetch(`/api/target-companies/${companyToDelete}`, { method: "DELETE" });
+      setCompanies((prev) => prev.filter((c) => c._id !== companyToDelete));
+      toast.success("Target company deleted");
+    } catch (e) { 
+      console.error(e); 
+      toast.error("Failed to delete company");
+    } finally {
+      setDeleteModalOpen(false);
+      setCompanyToDelete(null);
+    }
   };
 
   const flushUpdate = async (id: string, updates: any) => {
@@ -55,197 +83,92 @@ export default function TargetCompaniesPage() {
   };
 
   const handleLocalChange = (id: string, field: string, value: string) => {
-    setCompanies(companies.map((c) => (c._id === id ? { ...c, [field]: value } : c)));
+    setCompanies((prev) => prev.map((c) => (c._id === id ? { ...c, [field]: value } : c)));
   };
 
-  const autoFetchConnections = async (id: string, companyName: string) => {
+  const autoFetchConnections = async (id: string, companyName: string, linkedinPageUrl?: string) => {
     const originalCompany = companies.find((c) => c._id === id);
     if (!originalCompany) return;
-    alert(`Fetching LinkedIn profiles for ${companyName}…`);
+    toast.success(`Fetching LinkedIn profiles for ${companyName}…`);
     try {
       const res = await fetch("/api/jobs/fetch-contacts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companyName }),
+        body: JSON.stringify({ companyName, linkedinPageUrl }),
       });
       const data = await res.json();
       if (data.success && data.contacts?.length > 0) {
         const mergedContacts = [...(originalCompany.contacts || []), ...data.contacts];
-        setCompanies(companies.map((c) => (c._id === id ? { ...c, contacts: mergedContacts } : c)));
+        setCompanies((prev) => prev.map((c) => (c._id === id ? { ...c, contacts: mergedContacts } : c)));
         flushUpdate(id, { contacts: mergedContacts });
-        alert(`Found ${data.contacts.length} new connections!`);
+        toast.success(`Found ${data.contacts.length} new connections!`);
       } else {
-        alert("No additional connections found.");
+        toast.success("No additional connections found.");
       }
     } catch (e) { console.error(e); }
   };
 
+  const onDragEnd = async (result: any) => {
+    if (!result.destination) return;
+    const items = Array.from(companies);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    const updated = items.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+
+    setCompanies(updated);
+
+    try {
+      await fetch("/api/target-companies", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          updates: updated.map(c => ({ _id: c._id, order: c.order }))
+        }),
+      });
+    } catch(err) {
+      console.error(err);
+    }
+  };
+
   if (isLoading) {
     return (
-      <div style={{ height: "60vh", display: "flex", alignItems: "center", justifyContent: "center", color: "#a1a1aa" }}>
+      <div className="h-[60vh] flex items-center justify-center text-zinc-400">
         <Loader2 size={28} className="animate-spin" />
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 14, marginBottom: 28 }}>
-        <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.025em", color: "#18181b", marginBottom: 4 }}>
-            Step 3 — Target Companies
-          </h1>
-          <p style={{ fontSize: 14, color: "#71717a" }}>
-            Organise companies you want to work at and track your connections.
-          </p>
-        </div>
+    <div className="max-w-[1000px] mx-auto">
+      <TargetCompaniesHeader
+        newCompanyName={newCompanyName}
+        setNewCompanyName={setNewCompanyName}
+        isAdding={isAdding}
+        addCompany={addCompany}
+      />
 
-        <form onSubmit={addCompany} style={{ display: "flex", gap: 8 }}>
-          <input
-            type="text"
-            placeholder="Company name…"
-            value={newCompanyName}
-            onChange={(e) => setNewCompanyName(e.target.value)}
-            className="input-field"
-            style={{ width: 200, fontSize: 13 }}
-          />
-          <button
-            type="submit"
-            disabled={isAdding || !newCompanyName.trim()}
-            className="btn-primary"
-            style={{ fontSize: 13 }}
-          >
-            {isAdding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-            Add
-          </button>
-        </form>
-      </div>
+      <TargetCompaniesList
+        companies={companies}
+        onDragEnd={onDragEnd}
+        deleteCompany={initiateDelete}
+        handleLocalChange={handleLocalChange}
+        flushUpdate={flushUpdate}
+        autoFetchConnections={autoFetchConnections}
+      />
 
-      {/* Cards grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-        {companies.map((company) => (
-          <div
-            key={company._id}
-            style={{
-              background: "#fff",
-              border: "1px solid #e4e4e7",
-              borderRadius: 14,
-              padding: "18px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-              display: "flex",
-              flexDirection: "column",
-              gap: 14,
-            }}
-          >
-            {/* Company header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: "#f4f4f5",
-                    border: "1px solid #e4e4e7",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Building2 size={18} color="#52525b" />
-                </div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#18181b" }}>{company.name}</div>
-                  <input
-                    type="text"
-                    placeholder="Industry"
-                    value={company.industry || ""}
-                    onChange={(e) => handleLocalChange(company._id, "industry", e.target.value)}
-                    onBlur={() => flushUpdate(company._id, { industry: company.industry })}
-                    style={{ fontSize: 11, color: "#71717a", border: "none", outline: "none", background: "transparent", padding: 0, width: 120 }}
-                  />
-                </div>
-              </div>
-              <button onClick={() => deleteCompany(company._id)} style={{ background: "none", border: "none", cursor: "pointer", color: "#d4d4d8", padding: 4 }}>
-                <Trash2 size={14} />
-              </button>
-            </div>
-
-            {/* Website */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Globe size={12} color="#a1a1aa" />
-              <input
-                type="text"
-                placeholder="Website URL"
-                value={company.website || ""}
-                onChange={(e) => handleLocalChange(company._id, "website", e.target.value)}
-                onBlur={() => flushUpdate(company._id, { website: company.website })}
-                style={{ fontSize: 12, color: "#71717a", border: "none", outline: "none", background: "transparent", padding: 0, flex: 1 }}
-              />
-            </div>
-
-            {/* Connections */}
-            <div style={{ borderTop: "1px solid #f4f4f5", paddingTop: 12 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: "#a1a1aa", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Connections ({company.contacts?.length || 0})
-                </span>
-                <button
-                  onClick={() => autoFetchConnections(company._id, company.name)}
-                  style={{ fontSize: 11, color: "#3b82f6", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
-                >
-                  <UserPlus size={12} /> Find
-                </button>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 120, overflowY: "auto" }}>
-                {company.contacts?.map((contact: any, idx: number) => (
-                  <div
-                    key={idx}
-                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fafafa", border: "1px solid #e4e4e7", borderRadius: 8, padding: "7px 10px" }}
-                  >
-                    <div>
-                      <div style={{ fontSize: 12, fontWeight: 500, color: "#18181b" }}>{contact.name}</div>
-                      <div style={{ fontSize: 11, color: "#71717a" }}>{contact.role}</div>
-                    </div>
-                    {contact.linkedinUrl && (
-                      <a href={contact.linkedinUrl} target="_blank" rel="noreferrer" style={{ color: "#3b82f6", display: "flex" }}>
-                        <ExternalLink size={12} />
-                      </a>
-                    )}
-                  </div>
-                ))}
-                {(!company.contacts || company.contacts.length === 0) && (
-                  <p style={{ fontSize: 12, color: "#a1a1aa", fontStyle: "italic" }}>No connections yet.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Notes */}
-            <textarea
-              value={company.notes || ""}
-              onChange={(e) => handleLocalChange(company._id, "notes", e.target.value)}
-              onBlur={() => flushUpdate(company._id, { notes: company.notes })}
-              placeholder="Notes about this company…"
-              className="textarea-field"
-              style={{ minHeight: 64, fontSize: 12, resize: "vertical" }}
-            />
-          </div>
-        ))}
-        {companies.length === 0 && (
-          <div
-            style={{
-              gridColumn: "1 / -1",
-              padding: "64px 0",
-              textAlign: "center",
-              color: "#a1a1aa",
-              fontSize: 14,
-            }}
-          >
-            No target companies yet. Add your first one above.
-          </div>
-        )}
-      </div>
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Target Company"
+        message="Are you sure you want to delete this target company? This action cannot be undone."
+        confirmText="Delete"
+        isDestructive={true}
+      />
     </div>
   );
 }

@@ -5,18 +5,8 @@ export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttrib
     <select
       ref={ref}
       {...props}
-      style={{
-        width: "100%",
-        padding: "9px 12px",
-        background: "#fff",
-        border: "1px solid #e4e4e7",
-        borderRadius: 8,
-        fontSize: 13,
-        color: "#18181b",
-        outline: "none",
-        cursor: "pointer",
-        ...props.style,
-      }}
+      className="w-full px-3 py-[9px] bg-white border border-zinc-300 rounded-lg text-sm text-zinc-900 outline-none cursor-pointer "
+      style={props.style}
     />
   );
 });

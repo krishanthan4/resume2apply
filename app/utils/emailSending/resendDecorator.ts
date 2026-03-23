@@ -10,7 +10,7 @@ export class ResendEmailService implements IEmailService {
     this.fromEmail = fromEmail;
   }
 
-  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string): Promise<any> {
+  public async sendEmail(to: string, subject: string, body: string, attachments?: any[], scheduledAt?: string, bcc?: string): Promise<any> {
     try {
       const payload: any = {
         from: this.fromEmail,
@@ -20,6 +20,8 @@ export class ResendEmailService implements IEmailService {
       };
       if (attachments) payload.attachments = attachments;
       if (scheduledAt) payload.scheduled_at = scheduledAt;
+      if (bcc) payload.bcc = bcc;
+
 
       const res = await resend.emails.send(payload);
       return { success: true, data: res.data, error: res.error };
