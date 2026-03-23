@@ -182,6 +182,13 @@ export default function RegisterPage() {
                 </button>
               </div>
             </div>
+
+            <p className="text-[12px] text-center text-slate-400 font-medium px-4 leading-relaxed">
+              By creating an account, you agree to our{" "}
+              <Link href="/terms" className="text-slate-600 hover:text-slate-900 transition-colors underline underline-offset-2">Terms of Service</Link>
+              {" "}and{" "}
+              <Link href="/privacy" className="text-slate-600 hover:text-slate-900 transition-colors underline underline-offset-2">Privacy Policy</Link>.
+            </p>
             
             <p className="text-center mt-2 text-sm text-slate-500 font-medium">
               Already have an account?{" "}

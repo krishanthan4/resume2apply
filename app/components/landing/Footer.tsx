@@ -41,10 +41,10 @@ export function Footer() {
                   <span className="text-heading self-center text-2xl  whitespace-nowrap">Krishanthan</span>
               </a>
           </div>
-          <div className="grid  grid-cols-2">
-                           <div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 transition-all">
+              <div>
                   <h2 className="mb-6 text-sm font-semibold text-heading uppercase">Follow us</h2>
-                  <ul className="mt-11 font-medium text-[13px]">
+                  <ul className="font-medium text-[13px] text-body">
                       <li className="mb-4">
                           <a href={MY_GITHUB_URL} className="hover:underline " target="_blank" rel="noopener noreferrer">
                               GitHub
@@ -58,15 +58,30 @@ export function Footer() {
                   </ul>
               </div>
               <div>
+                  <h2 className="mb-6 text-sm font-semibold text-heading uppercase">Legal</h2>
+                  <ul className="font-medium text-[13px] text-body">
+                      <li className="mb-4 text-nowrap">
+                          <Link href="/privacy" className="hover:underline">
+                              Privacy Policy
+                          </Link>
+                      </li>
+                      <li className="text-nowrap">
+                          <Link href="/terms" className="hover:underline">
+                              Terms & Conditions
+                          </Link>
+                      </li>
+                  </ul>
+              </div>
+              <div>
                   <h2 className="mb-6 text-sm font-semibold text-heading uppercase">By the maker of <br/>resume2apply</h2>
-                  <ul className=" font-medium text-[13px]">
+                  <ul className=" font-medium text-[13px] text-body">
                       <li className="mb-4">
                           <a href="https://steal-my-idea.krish4.tech/" className="hover:underline" target="_blank" rel="noopener noreferrer">
                               Steal My Idea
                           </a>
                       </li>
                       <li>
-                          <a href="https://chromewebstore.google.com/detail/inflgdfcjbcmokdlkcepaapaakhmfnno?utm_source=item-share-cb" className="hover:underline">LinkedOut</a>
+                          <a href="https://chromewebstore.google.com/detail/inflgdfcjbcmokdlkcepaapaakhmfnno?utm_source=item-share-cb" className="hover:underline" target="_blank" rel="noopener noreferrer">LinkedOut</a>
                       </li>
                   </ul>
               </div>
