@@ -4,9 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, ArrowLeft, Mail } from "lucide-react";
-
-import Image from "next/image";
+import { Loader2, ArrowLeft } from "lucide-react";
 import { Button, Input, Label } from "@/app/components/ui";
 
 export default function LoginPage() {

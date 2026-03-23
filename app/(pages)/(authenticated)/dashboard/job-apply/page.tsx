@@ -3,13 +3,12 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { Plus, Loader2, FileText, Search } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import JobDetailModal from "@/app/components/job-apply/JobDetailModal";
 import CoverLetterTemplatesModal from "@/app/components/job-apply/CoverLetterTemplatesModal";
 import KanbanColumn from "@/app/components/job-apply/KanbanColumn";
 import AddJobModal from "@/app/components/job-apply/AddJobModal";
 import { Button } from "@/app/components/ui/Button";
-import { Input, Select } from "@/app/components/ui";
+import { Select } from "@/app/components/ui";
 
 const COLUMNS = [
   { id: "willing_to_apply", title: "Wishlist", color: "#3b82f6" },

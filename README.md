@@ -8,7 +8,7 @@
 ---
 
 ## What is it?
-**Resume2Apply** is a completely free, self-hostable Software-as-a-Service (SaaS) application modeled directly after premium job tracking portals. 
+**Resume2Apply** is an open-source resume and job application platform modeled after premium career tracking portals. 
 Instead of losing track of multiple CV versions scattered across folders, Resume2Apply provides:
 - **Rich CV Designer**: Drag-and-drop customization, multi-templating, and live 3D PDF generation.
 - **Kanban Board**: Visually track your applications from *Applying* to *Interviews* to *Offers*.
@@ -27,7 +27,7 @@ Instead of losing track of multiple CV versions scattered across folders, Resume
 
 ---
 
-## Getting Started (Self-Hosting)
+## Installation & Setup
 
 ### Prerequisites
 Before you start, you'll need:

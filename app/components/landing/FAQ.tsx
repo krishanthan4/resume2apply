@@ -8,8 +8,8 @@ import { FadeUp } from "./FadeUp";
 
 const FAQ_DATA = [
   {
-    q: "Why you telling us to self-host? Isn't this a SaaS product?",
-    a: "You can still create your resume and test scheduling job application sending via email on our hosted version, but the problem is since this platform is for send job application emails,the email should be sent with your own email, which requires your App Password to be stored on our server. By self-hosting, you can keep your credentials private and secure while still benefiting from our powerful resume-building and email-sending features.",
+    q: "Why is this platform open-source?",
+    a: "We believe in transparency and security. Since this platform handles job application emails, sending them requires your own email credentials. By being open-source, you can verify how your data is handled and even run your own instance to keep your credentials completely private while still benefiting from our powerful resume-building and email-sending features.",
     image: "/backgroundimage.png",
   },
   {
@@ -19,19 +19,24 @@ const FAQ_DATA = [
   },
   {
     q: "How does the email sending work?",
-    a: "There are 2 options, you can choose either SMTP method or domain method. the SMTP method would send the email in your gmail or outlook email, if you own a domain, you can choose the domain method, which would send the email with your own domain",
+    a: "You can send emails with your professional email, you can choose your google or outlook email to send emails from, in the future update we will add the feature to use your own domain email to send emails from",
   },
   {
-    q: "Where is my data stored?",
-    a: "In your chosen MongoDB instance. Because it is self-hosted, you hold complete sovereignty over your data and PDFs. No 3rd parties scanning your work history.",
+    q: "How does the cover letter work?",
+    a: "You can generate cover letters for each job application, you can customize the cover letter to your needs, in the future update we will add the feature to generate cover letters automatically",
   },
-   {
-    q: "Does this have docker image?",
-    a: "Yes, you can build it from the source code.",
+  {
+    q: "Is the platform mobile-friendly?",
+    a: "Yes, the platform is fully responsive and works great on mobile devices. You can manage your applications and even edit your resume on the go.",
   },
+  {
+    q: "Can I export my resume to PDF?",
+    a: "Yes, you can export your resume to a high-quality PDF format , ensuring that your application gets through automated screening systems.",
+  },
+
 ];
 
-const AccordionItem = ({ q, a, image }: { q: string; a: string; image?: string }) => {
+const AccordionItem = ({ q, a }: { q: string; a: string}) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border border-slate-200 rounded-2xl mb-4 overflow-hidden bg-white shadow-sm hover:border-slate-300 transition-colors">
@@ -82,7 +87,7 @@ export function FAQ() {
         <div className="space-y-4">
           {FAQ_DATA.map((item, index) => (
             <FadeUp key={index} delay={index * 0.1}>
-              <AccordionItem q={item.q} a={item.a} image={item.image} />
+              <AccordionItem q={item.q} a={item.a} />
             </FadeUp>
           ))}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sun, LogOut, Loader2, Mail, CheckCircle2 } from "lucide-react";
+import { Sun, LogOut, Loader2, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {

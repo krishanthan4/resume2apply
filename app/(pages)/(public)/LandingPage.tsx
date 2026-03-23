@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Navbar } from "../../components/landing/Navbar";
 import { Hero } from "../../components/landing/Hero";
 import { Timeline } from "../../components/landing/Timeline";

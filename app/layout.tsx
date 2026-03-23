@@ -11,7 +11,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Resume2Apply - Build, Tweak, Apply",
-  description: "The self-hosted resume and job application platform. Build your CV, tweak templates, and manage your job applications in one clean workspace.",
+  description: "The resume and job application platform. Build your CV, tweak templates, and manage your job applications in one clean workspace.",
 };
 
 export default function RootLayout({

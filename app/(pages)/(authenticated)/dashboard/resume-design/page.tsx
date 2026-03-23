@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useJobBoardStore } from "@/app/store/useJobBoardStore";
 import ControlSide from "@/app/components/resume-design/ControlsSide";
 import PDFView from "@/app/components/resume-design/PDFView";
-import { Button, TextArea } from "@/app/components/ui";
 import ExecutiveSummaryModel from "@/app/components/resume-design/ExecutiveSummaryModel";
 
 export default function CustomResumeBuilderPage() {
