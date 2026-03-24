@@ -1,2 +1,23 @@
 @import "tailwindcss";
 
+/* Custom global scrollbar styles */
+::-webkit-scrollbar {
+  width: 15px;
+  background-color: #f4f4f5; /* zinc-100 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #b9b9b9; /* zinc-200 for thumb for contrast */
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #dedede; /* zinc-100 */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e4e4e7 #f4f4f5;
+}
+

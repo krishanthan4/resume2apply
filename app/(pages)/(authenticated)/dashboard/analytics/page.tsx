@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="mb-7">
         <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-[6px]">
-          Step 5 — Analytics
+          Step 4 — Analytics
         </h1>
         <p className="text-sm text-zinc-500">
           Track your application activity and pipeline health.

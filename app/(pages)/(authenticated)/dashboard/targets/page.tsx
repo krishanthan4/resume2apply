@@ -14,6 +14,8 @@ export default function TargetCompaniesPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [companyToDelete, setCompanyToDelete] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"detailed" | "short">("detailed");
 
   useEffect(() => { fetchCompanies(); }, []);
 
@@ -134,6 +136,22 @@ export default function TargetCompaniesPage() {
     }
   };
 
+  const isSearchActive = searchQuery.trim().length > 0;
+  const filteredCompanies = companies.filter((company) => {
+    const query = searchQuery.toLowerCase();
+    if (!query) return true;
+    return (
+      (company.name && company.name.toLowerCase().includes(query)) ||
+      (company.description && company.description.toLowerCase().includes(query)) ||
+      (company.notes && company.notes.toLowerCase().includes(query)) ||
+      (company.whyApply && company.whyApply.toLowerCase().includes(query)) ||
+      (company.contacts && company.contacts.some((c: any) => 
+        (c.name && c.name.toLowerCase().includes(query)) || 
+        (c.role && c.role.toLowerCase().includes(query))
+      ))
+    );
+  });
+
   if (isLoading) {
     return (
       <div className="h-[60vh] flex items-center justify-center text-zinc-400">
@@ -149,10 +167,16 @@ export default function TargetCompaniesPage() {
         setNewCompanyName={setNewCompanyName}
         isAdding={isAdding}
         addCompany={addCompany}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
 
       <TargetCompaniesList
-        companies={companies}
+        companies={filteredCompanies}
+        isSearchActive={isSearchActive}
+        viewMode={viewMode}
         onDragEnd={onDragEnd}
         deleteCompany={initiateDelete}
         handleLocalChange={handleLocalChange}

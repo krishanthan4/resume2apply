@@ -1,9 +1,7 @@
-import { Download } from 'lucide-react'
 import React from 'react'
 import { Button } from "@/app/components/ui";
 
-
-function Nav({config, setConfig, pdfUrl, handleDownload}: {config: any, setConfig: React.Dispatch<React.SetStateAction<any>>, pdfUrl: string | null, handleDownload: () => void}) {
+function Nav({config, setConfig}: {config: any, setConfig: React.Dispatch<React.SetStateAction<any>>, pdfUrl: string | null, handleDownload: () => void}) {
 
   const setDetailedCV = () => {
     setConfig({
@@ -43,7 +41,7 @@ function Nav({config, setConfig, pdfUrl, handleDownload}: {config: any, setConfi
   });
 
   return (
-    <div className="h-14 border-b border-zinc-200 bg-zinc-50 flex items-center justify-center shrink-0 gap-4 overflow-x-auto whitespace-nowrap">
+    <div className="h-14 border-b border-zinc-200  flex items-center justify-center shrink-0 md:gap-4 gap-2 overflow-x-auto whitespace-nowrap">
       <div className="flex gap-1 bg-zinc-200 p-1 rounded-lg">
         <Button onClick={setSingleCV} style={btnStyle(config.type === "single")}>Single CV</Button>
         <Button onClick={setDetailedCV} style={btnStyle(config.type === "detailed")}>Detailed CV</Button>

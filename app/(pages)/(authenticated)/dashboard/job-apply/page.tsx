@@ -118,7 +118,7 @@ function JobApplyKanbanContent() {
       <div className="flex flex-col gap-4 ">
         <div className="">
           <h1 className="text-[26px] font-extrabold tracking-[-0.025em] text-zinc-900 mb-1">
-            Step 4 — Application Board
+            Step 3 — Application Board
           </h1>
           <p className="text-sm text-zinc-500">
             Drag cards across columns to track your applications.

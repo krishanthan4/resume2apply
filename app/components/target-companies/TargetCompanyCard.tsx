@@ -12,6 +12,8 @@ interface TargetCompanyCardProps {
   handleLocalChange: (id: string, field: string, value: string) => void;
   flushUpdate: (id: string, updates: any) => void;
   autoFetchConnections: (id: string, companyName: string, linkedinPageUrl?: string) => void;
+  isDragDisabled?: boolean;
+  viewMode: "detailed" | "short";
 }
 
 export function TargetCompanyCard({
@@ -21,6 +23,8 @@ export function TargetCompanyCard({
   handleLocalChange,
   flushUpdate,
   autoFetchConnections,
+  isDragDisabled,
+  viewMode,
 }: TargetCompanyCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState({
@@ -35,6 +39,41 @@ export function TargetCompanyCard({
   const [newContact, setNewContact] = useState({ name: "", role: "", linkedinUrl: "" });
   const [deleteContactIdx, setDeleteContactIdx] = useState<number | null>(null);
   const [deleteContactModalOpen, setDeleteContactModalOpen] = useState(false);
+
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const fetchLogo = async () => {
+      // If no valid URL string, keep null
+      if (!company.website && !company.linkedinPageUrl) {
+        setLogoUrl(null);
+        return;
+      }
+      try {
+        const res = await fetch("/api/target-companies/logo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            linkedinPageUrl: company.linkedinPageUrl,
+            website: company.website,
+          }),
+        });
+        const data = await res.json();
+        if (active && data.success && data.logoUrl) {
+          setLogoUrl(data.logoUrl);
+          setLogoError(false);
+        }
+      } catch (e) {
+        console.error("Logo fetch error", e);
+      }
+    };
+    fetchLogo();
+    return () => {
+      active = false;
+    };
+  }, [company.website, company.linkedinPageUrl]);
 
   useEffect(() => {
     setDraft({
@@ -97,17 +136,60 @@ export function TargetCompanyCard({
   };
 
   return (
-    <Draggable key={company._id} draggableId={company._id} index={index}>
+    <Draggable key={company._id} draggableId={company._id} index={index} isDragDisabled={isDragDisabled}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={`bg-white border border-zinc-200 rounded-[14px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)] flex flex-col md:flex-row gap-6 relative ${
+          className={`bg-white border border-zinc-200 rounded-[14px] shadow-[0_1px_3px_rgba(0,0,0,0.05)] relative group overflow-hidden ${
             snapshot.isDragging ? "shadow-xl ring-1 ring-zinc-200 z-10" : ""
-          }`}
+          } ${viewMode === "short" ? "flex items-center gap-3 p-4 hover:bg-zinc-50 transition-colors" : "flex flex-col md:flex-row gap-6 p-5"}`}
         >
-          {/* Left: Main Details */}
-          <div className="flex-1 flex flex-col gap-4">
+          {viewMode === "short" ? (
+            <>
+              <div
+                {...provided.dragHandleProps}
+                className="cursor-grab text-zinc-400 hover:text-zinc-600 z-10 relative"
+              >
+                <GripVertical size={18} />
+              </div>
+              <div className="w-8 h-8 rounded-[8px] bg-white border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden z-10 relative">
+                {logoUrl && !logoError ? (
+                  <img src={logoUrl} alt={company.name} onError={() => setLogoError(true)} className="w-full h-full object-cover" />
+                ) : (
+                  <Building2 size={16} className="text-zinc-600" />
+                )}
+              </div>
+              {company.linkedinPageUrl?.trim() ? (
+                <a
+                  href={company.linkedinPageUrl.startsWith('http') ? company.linkedinPageUrl : `https://${company.linkedinPageUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 font-semibold text-[14px] text-zinc-900 truncate z-10 relative hover:underline hover:text-blue-800"
+                  title="View LinkedIn Page"
+                >
+                  {company.name}
+                </a>
+              ) : company.website?.trim() ? (
+                <a
+                  href={company.website.startsWith('http') ? company.website : `https://${company.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 font-semibold text-[14px] text-zinc-900 truncate z-10 relative hover:underline hover:text-blue-800"
+                  title="View Website"
+                >
+                  {company.name}
+                </a>
+              ) : (
+                <div className="flex-1 font-semibold text-[14px] text-zinc-900 truncate z-10 relative">
+                  {company.name}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* Left: Main Details */}
+              <div className="flex-1 flex flex-col gap-4">
             {/* Header + Drag Handle */}
             <div className="flex items-start gap-3">
               <div
@@ -116,8 +198,12 @@ export function TargetCompanyCard({
               >
                 <GripVertical size={18} />
               </div>
-              <div className="w-10 h-10 rounded-[10px] bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0">
-                <Building2 size={20} className="text-zinc-600" />
+              <div className="w-10 h-10 rounded-[10px] bg-white border border-zinc-200 flex items-center justify-center shrink-0 overflow-hidden">
+                {logoUrl && !logoError ? (
+                  <img src={logoUrl} alt={company.name} onError={() => setLogoError(true)} className="w-full h-full object-cover" />
+                ) : (
+                  <Building2 size={20} className="text-zinc-600" />
+                )}
               </div>
               <div className="flex-1">
                 <div className="flex justify-between items-start">
@@ -385,6 +471,8 @@ export function TargetCompanyCard({
               )}
             </div>
           </div>
+            </>
+          )}
         </div>
       )}
     </Draggable>

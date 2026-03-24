@@ -41,7 +41,7 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
         {/* Step progress bar */}
         <div className={`bg-white transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? "max-h-[100px] border-t border-zinc-100 opacity-100" : "max-h-0 border-t-0 opacity-0"}`}>
           <div
-            className="max-w-[1200px] mx-auto px-6 flex items-stretch overflow-x-auto scrollbar-hide"
+            className="md:max-w-[1200px] mx-auto md:px-6 px-1 flex items-stretch overflow-x-auto scrollbar-hide"
           >
             {STEPS.map((step, i) => {
               const isActive = i === activeIdx;
@@ -51,16 +51,16 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
                 <React.Fragment key={step.num}>
                   <Link
                     href={step.path}
-                    className={`flex items-center gap-2.5 py-2.5 px-4 border-b-2 no-underline whitespace-nowrap transition-colors duration-200 relative ${isActive ? "border-zinc-900" : "border-transparent"}`}
+                    className={`flex items-center md:justify-start justify-center md:gap-2.5 gap-2 py-2.5 md:px-4 px-2 border-b-2 no-underline whitespace-nowrap transition-colors duration-200 relative ${isActive ? "border-zinc-900" : "border-transparent"}`}
                   >
                     {/* Circle number */}
                     <div
                       className={`w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0 transition-colors duration-200 ${isDone || isActive ? "bg-zinc-900 border-none" : "bg-white border-[1.5px] border-zinc-300"}`}
                     >
                       {isDone ? (
-                        <CheckCircle2 size={12} color="#fff" strokeWidth={2.5} />
+                        <CheckCircle2 size={16} color="#fff" strokeWidth={2.5} />
                       ) : (
-                        <span className={`text-[10px] font-bold ${isActive ? "text-white" : "text-zinc-400"}`}>
+                        <span className={`text-[13px] font-bold ${isActive ? "text-white" : "text-zinc-400"}`}>
                           {step.num}
                         </span>
                       )}
@@ -68,10 +68,10 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
 
                     {/* Label */}
                     <div>
-                      <div className={`text-xs font-semibold leading-[1.2] transition-colors duration-200 ${isActive || isDone ? "text-zinc-900" : "text-zinc-400"}`}>
+                      <div className={`md:text-[14px] text-xs font-semibold leading-[1.2] transition-colors duration-200 ${isActive || isDone ? "text-zinc-900" : "text-zinc-400"}`}>
                         {step.label}
                       </div>
-                      <div className="text-[10px] text-zinc-400 leading-[1.2]">
+                      <div className="md:text-[11px] sm:text-[10px] text-[0px] text-zinc-400 leading-[1.2]">
                         {step.sublabel}
                       </div>
                     </div>
@@ -79,7 +79,7 @@ function DashboardTopNavbar({ pathname,STEPS,activeIdx }: { pathname: string, ST
 
                   {/* Connector line between steps */}
                   {i < STEPS.length - 1 && (
-                    <div className={`self-center w-5 h-[1px] shrink-0 transition-colors duration-300 ${i < activeIdx ? "bg-zinc-900" : "bg-zinc-200"}`} />
+                    <div className={`self-center md:w-5 w-1 h-[1px] shrink-0 transition-colors duration-300 ${i < activeIdx ? "bg-zinc-900" : "bg-zinc-200"}`} />
                   )}
                 </React.Fragment>
               );

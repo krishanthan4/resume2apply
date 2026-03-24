@@ -11,6 +11,8 @@ interface TargetCompaniesListProps {
   handleLocalChange: (id: string, field: string, value: string) => void;
   flushUpdate: (id: string, updates: any) => void;
   autoFetchConnections: (id: string, companyName: string, linkedinPageUrl?: string) => void;
+  isSearchActive?: boolean;
+  viewMode: "detailed" | "short";
 }
 
 export function TargetCompaniesList({
@@ -20,6 +22,8 @@ export function TargetCompaniesList({
   handleLocalChange,
   flushUpdate,
   autoFetchConnections,
+  isSearchActive,
+  viewMode,
 }: TargetCompaniesListProps) {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -39,6 +43,8 @@ export function TargetCompaniesList({
                 handleLocalChange={handleLocalChange}
                 flushUpdate={flushUpdate}
                 autoFetchConnections={autoFetchConnections}
+                isDragDisabled={isSearchActive}
+                viewMode={viewMode}
               />
             ))}
             {provided.placeholder}
